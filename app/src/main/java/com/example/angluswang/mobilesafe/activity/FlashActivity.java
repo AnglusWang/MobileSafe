@@ -7,6 +7,13 @@ import android.os.Bundle;
 import android.widget.TextView;
 
 import com.example.angluswang.mobilesafe.R;
+import com.example.angluswang.mobilesafe.utils.StreamUtils;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 public class FlashActivity extends Activity {
 
@@ -19,6 +26,8 @@ public class FlashActivity extends Activity {
 
         mTvVersion = (TextView) findViewById(R.id.tv_version);
         mTvVersion.setText("版本号： " + getVersionName());
+
+        checkVersion();
     }
 
     /**
@@ -44,5 +53,47 @@ public class FlashActivity extends Activity {
         }
 
         return "";
+    }
+    /**
+     * 从服务器获取版本信息进行校验
+     */
+    private void checkVersion() {
+
+        // 启动子线程异步加载数据
+        new Thread() {
+
+            @Override
+            public void run() {
+                URL url = null;
+                HttpURLConnection conn = null;
+                try {
+                    //本地主机用localhost，模拟器上加载本机的地址，用10.0.2.2来代替
+                    url = new URL("http://10.0.2.2:8080/update.json");
+                    conn = (HttpURLConnection) url.openConnection();
+                    conn.setRequestMethod("GET");
+                    conn.setConnectTimeout(5000);
+                    conn.setReadTimeout(5000);
+                    conn.connect();
+
+                    int responseCode = conn.getResponseCode();  //获取响应码
+                    System.out.println("responseCode: " + responseCode);
+                    if (responseCode == 200) {
+                        InputStream in = conn.getInputStream();
+                        String result = StreamUtils.ReadFromStream(in);
+
+                        System.out.println("网络请求：" + result);
+
+                    }
+
+                } catch (MalformedURLException e) {
+
+                    e.printStackTrace();
+                }
+                catch (IOException e) {
+
+                    e.printStackTrace();
+                }
+            }
+        }.start();
     }
 }
