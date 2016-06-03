@@ -21,13 +21,22 @@ public class FlashActivity extends Activity {
         mTvVersion.setText("版本号： " + getVersionName());
     }
 
+    /**
+     * 获取版本号名
+     * @return
+     */
     private String getVersionName() {
 
-        PackageManager pm = getPackageManager();
+        PackageManager packageManager = getPackageManager();
         try {
-            PackageInfo pi = pm.getPackageInfo(getPackageName(), 0);
+            // 获取包的信息
+            PackageInfo packageInfo = packageManager.getPackageInfo(getPackageName(), 0);
 
-            String versionName = pi.versionName;
+            int versionCode = packageInfo.versionCode;
+            String versionName = packageInfo.versionName;
+
+            System.out.println("versionName = " + versionName + "; versionCode = "
+                    + versionCode);
 
             return versionName;
         } catch (Exception e) {
