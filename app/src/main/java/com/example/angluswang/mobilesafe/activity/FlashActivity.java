@@ -67,8 +67,8 @@ public class FlashActivity extends Activity {
                 URL url = null;
                 HttpURLConnection conn = null;
                 try {
-                    //本地主机用localhost，模拟器上加载本机的地址，用10.0.2.2来代替
-                    url = new URL("http://10.0.2.2:8080/update.json");
+                    //本地主机用localhost，模拟器上加载本机的地址
+                    url = new URL("http://192.168.1.104:8080/update.json");
                     conn = (HttpURLConnection) url.openConnection();
                     conn.setRequestMethod("GET");
                     conn.setConnectTimeout(5000);
@@ -76,7 +76,6 @@ public class FlashActivity extends Activity {
                     conn.connect();
 
                     int responseCode = conn.getResponseCode();  //获取响应码
-                    System.out.println("responseCode: " + responseCode);
                     if (responseCode == 200) {
                         InputStream in = conn.getInputStream();
                         String result = StreamUtils.ReadFromStream(in);
