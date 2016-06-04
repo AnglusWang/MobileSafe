@@ -7,7 +7,9 @@ import android.os.Bundle;
 import android.widget.TextView;
 
 import com.example.angluswang.mobilesafe.R;
+import com.example.angluswang.mobilesafe.entity.VersionInfo;
 import com.example.angluswang.mobilesafe.utils.StreamUtils;
+import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,6 +20,7 @@ import java.net.URL;
 public class FlashActivity extends Activity {
 
     private TextView mTvVersion;
+    private VersionInfo mVersionInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,11 +44,7 @@ public class FlashActivity extends Activity {
             // 获取包的信息
             PackageInfo packageInfo = packageManager.getPackageInfo(getPackageName(), 0);
 
-            int versionCode = packageInfo.versionCode;
             String versionName = packageInfo.versionName;
-
-            System.out.println("versionName = " + versionName + "; versionCode = "
-                    + versionCode);
 
             return versionName;
         } catch (Exception e) {
@@ -54,6 +53,28 @@ public class FlashActivity extends Activity {
 
         return "";
     }
+
+    /**
+     * 获取版本号
+     * @return
+     */
+    private int getVersionCode() {
+
+        PackageManager packageManager = getPackageManager();
+        try {
+            // 获取包的信息
+            PackageInfo packageInfo = packageManager.getPackageInfo(getPackageName(), 0);
+
+            int versionCode = packageInfo.versionCode;
+
+            return versionCode;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return -1;
+    }
+
     /**
      * 从服务器获取版本信息进行校验
      */
@@ -81,6 +102,10 @@ public class FlashActivity extends Activity {
                         String result = StreamUtils.ReadFromStream(in);
 
                         System.out.println("网络请求：" + result);
+
+                        //解析JSON(使用GSON工具解析)
+                        Gson gson = new Gson();
+                        mVersionInfo = gson.fromJson(result, VersionInfo.class);
 
                     }
 
