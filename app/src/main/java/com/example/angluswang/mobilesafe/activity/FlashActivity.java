@@ -1,10 +1,15 @@
 package com.example.angluswang.mobilesafe.activity;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.angluswang.mobilesafe.R;
 import com.example.angluswang.mobilesafe.entity.VersionInfo;
@@ -19,8 +24,32 @@ import java.net.URL;
 
 public class FlashActivity extends Activity {
 
+    private static final int CODE_UPDATE_DIALOG = 0;
+    private static final int CODE_URL_ERROR = 1;
+    private static final int CODE_NET_ERROR = 2;
+
     private TextView mTvVersion;
+
     private VersionInfo mVersionInfo;
+
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case CODE_UPDATE_DIALOG:
+                    showUpdateDialog();
+                    break;
+                case CODE_URL_ERROR:
+                    Toast.makeText(FlashActivity.this, "Url异常", Toast.LENGTH_SHORT).show();
+                    break;
+                case CODE_NET_ERROR:
+                    Toast.makeText(FlashActivity.this, "网络异常", Toast.LENGTH_SHORT).show();
+                    break;
+                default:
+                    break;
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,11 +114,12 @@ public class FlashActivity extends Activity {
 
             @Override
             public void run() {
-                URL url = null;
+
+                Message msg = Message.obtain();
                 HttpURLConnection conn = null;
                 try {
                     //本地主机用localhost，模拟器上加载本机的地址
-                    url = new URL("http://192.168.1.104:8080/update.json");
+                    URL url = new URL("http://192.168.1.104:8080/update.json");
                     conn = (HttpURLConnection) url.openConnection();
                     conn.setRequestMethod("GET");
                     conn.setConnectTimeout(5000);
@@ -107,17 +137,54 @@ public class FlashActivity extends Activity {
                         Gson gson = new Gson();
                         mVersionInfo = gson.fromJson(result, VersionInfo.class);
 
+                        //判断是否有更新
+                        if (mVersionInfo.getVersionCode() > getVersionCode()) {
+
+                            //弹出升级对话框
+                            msg.what = CODE_UPDATE_DIALOG;
+                        }
+
                     }
 
                 } catch (MalformedURLException e) {
-
+                    msg.what = CODE_URL_ERROR;
                     e.printStackTrace();
-                }
-                catch (IOException e) {
-
+                } catch (IOException e) {
+                    msg.what = CODE_NET_ERROR;
                     e.printStackTrace();
+                } finally {
+                    mHandler.sendMessage(msg);
+
+                    if (conn != null) {
+                        conn.disconnect();  //关闭网络连接
+                    }
                 }
             }
         }.start();
+    }
+
+    /**
+     * 显示升级对话框
+     */
+    private void showUpdateDialog() {
+        AlertDialog.Builder builder  = new AlertDialog.Builder(this);
+        builder.setTitle("最新版本：" + mVersionInfo.getVersionName());
+        builder.setMessage(mVersionInfo.getDescription());
+        builder.setPositiveButton("立即更新", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                System.out.println("立即更新");
+            }
+        });
+        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                System.out.println("取消");
+            }
+        });
+//        AlertDialog dialog = builder.create();
+//        dialog.show();
+        builder.show();
+
     }
 }
