@@ -3,6 +3,7 @@ package com.example.angluswang.mobilesafe.activity;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -27,6 +28,7 @@ public class FlashActivity extends Activity {
     private static final int CODE_UPDATE_DIALOG = 0;
     private static final int CODE_URL_ERROR = 1;
     private static final int CODE_NET_ERROR = 2;
+    private static final int CODE_ENTER_HOME = 3;
 
     private TextView mTvVersion;
 
@@ -45,6 +47,9 @@ public class FlashActivity extends Activity {
                 case CODE_NET_ERROR:
                     Toast.makeText(FlashActivity.this, "网络异常", Toast.LENGTH_SHORT).show();
                     break;
+                case CODE_ENTER_HOME:
+                    enterHome();
+                    break;
                 default:
                     break;
             }
@@ -54,7 +59,7 @@ public class FlashActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_flash);
 
         mTvVersion = (TextView) findViewById(R.id.tv_version);
         mTvVersion.setText("版本号： " + getVersionName());
@@ -112,6 +117,8 @@ public class FlashActivity extends Activity {
         // 启动子线程异步加载数据
         new Thread() {
 
+            final long startTime = System.currentTimeMillis();
+
             @Override
             public void run() {
 
@@ -142,6 +149,8 @@ public class FlashActivity extends Activity {
 
                             //弹出升级对话框
                             msg.what = CODE_UPDATE_DIALOG;
+                        } else {
+                            msg.what = CODE_ENTER_HOME;
                         }
 
                     }
@@ -153,6 +162,19 @@ public class FlashActivity extends Activity {
                     msg.what = CODE_NET_ERROR;
                     e.printStackTrace();
                 } finally {
+
+                    long endTime = System.currentTimeMillis();
+                    long timeUsed = endTime - startTime;
+
+                    //强制休眠，保证闪屏界面展示
+                    if (timeUsed < 2000) {
+                        try {
+                            Thread.sleep(2000 - timeUsed);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
                     mHandler.sendMessage(msg);
 
                     if (conn != null) {
@@ -176,15 +198,33 @@ public class FlashActivity extends Activity {
                 System.out.println("立即更新");
             }
         });
-        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton("以后再说", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                System.out.println("以后再说");
+                enterHome();
+            }
+        });
+
+        builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
                 System.out.println("取消");
+                enterHome();
             }
         });
 //        AlertDialog dialog = builder.create();
 //        dialog.show();
         builder.show();
 
+    }
+
+    /**
+     * 进入主界面
+     */
+    private void enterHome() {
+        Intent intent = new Intent(FlashActivity.this, HomeActivity.class);
+        startActivity(intent);
+        finish();
     }
 }
