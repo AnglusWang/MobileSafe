@@ -7,8 +7,10 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -16,7 +18,12 @@ import com.example.angluswang.mobilesafe.R;
 import com.example.angluswang.mobilesafe.entity.VersionInfo;
 import com.example.angluswang.mobilesafe.utils.StreamUtils;
 import com.google.gson.Gson;
+import com.lidroid.xutils.HttpUtils;
+import com.lidroid.xutils.exception.HttpException;
+import com.lidroid.xutils.http.ResponseInfo;
+import com.lidroid.xutils.http.callback.RequestCallBack;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -30,7 +37,7 @@ public class FlashActivity extends Activity {
     private static final int CODE_NET_ERROR = 2;
     private static final int CODE_ENTER_HOME = 3;
 
-    private TextView mTvVersion;
+    private TextView mTvVersion, tvProgress;
 
     private VersionInfo mVersionInfo;
 
@@ -64,6 +71,7 @@ public class FlashActivity extends Activity {
         mTvVersion = (TextView) findViewById(R.id.tv_version);
         mTvVersion.setText("版本号： " + getVersionName());
 
+        tvProgress = (TextView) findViewById(R.id.tv_progress);
         checkVersion();
     }
 
@@ -196,6 +204,7 @@ public class FlashActivity extends Activity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 System.out.println("立即更新");
+                downLoad();
             }
         });
         builder.setNegativeButton("以后再说", new DialogInterface.OnClickListener() {
@@ -217,6 +226,45 @@ public class FlashActivity extends Activity {
 //        dialog.show();
         builder.show();
 
+    }
+
+    /**
+     * 下载Apk
+     */
+    private void downLoad() {
+
+        if (Environment.getExternalStorageState().equals(
+                Environment.MEDIA_MOUNTED)) {
+
+            tvProgress.setVisibility(View.VISIBLE);
+
+            String target = Environment.getExternalStorageDirectory() + "/update.apk";
+
+            HttpUtils utils = new HttpUtils();
+            utils.download(mVersionInfo.getDownloadUrl(), target, new RequestCallBack<File>() {
+
+                //下载文件的进度
+                @Override
+                public void onLoading(long total, long current, boolean isUploading) {
+                    super.onLoading(total, current, isUploading);
+                    System.out.println("下载进度：" + current + "/" + total);
+
+                    tvProgress.setText("下载进度：" + current * 100 / total + "%");
+                }
+
+                @Override
+                public void onSuccess(ResponseInfo<File> responseInfo) {
+                    Toast.makeText(FlashActivity.this, "下载成功", Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onFailure(HttpException e, String s) {
+                    Toast.makeText(FlashActivity.this, "下载失败", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }else {
+            Toast.makeText(FlashActivity.this, "没有检测到SD卡", Toast.LENGTH_SHORT).show();
+        }
     }
 
     /**

@@ -27,4 +27,18 @@
         android:layout_below="@id/tv_version"
         android:layout_centerHorizontal="true"/>
 
+    <TextView
+        android:text="@string/tv_progress"
+        android:textSize="15sp"
+        android:textColor="@color/red"
+        android:visibility="invisible"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="15dp"
+        android:layout_marginEnd="15dp"
+        android:id="@+id/tv_progress"/>
+
 </RelativeLayout>
