@@ -263,7 +263,8 @@ public class FlashActivity extends Activity {
                     intent.addCategory(Intent.CATEGORY_DEFAULT);
                     intent.setDataAndType(Uri.fromFile(responseInfo.result),
                             "application/vnd.android.package-archive");
-                    startActivity(intent);
+//                    startActivity(intent);    //该方法启动时如果不点击下载，会停留在闪屏页面
+                    startActivityForResult(intent, 0);  //该方法会回调onActivityResult()
                 }
 
                 @Override
@@ -274,6 +275,13 @@ public class FlashActivity extends Activity {
         }else {
             Toast.makeText(FlashActivity.this, "没有检测到SD卡", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        enterHome();
+        super.onActivityResult(requestCode, resultCode, data);
+
     }
 
     /**
