@@ -16,4 +16,7 @@
         completions."
     </string>
     <string name="tv_progress">下载进度</string>
+    <string name="home_safe">手机防盗</string>
+    <string name="desc_nb">有了手机卫士, 腰不酸了,腿不疼了,走路也有劲了, 手机卫士太NB了</string>
+    <string name="tv_function">功能列表</string>
 </resources>
