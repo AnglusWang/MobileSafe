@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -50,9 +51,11 @@ public class FlashActivity extends Activity {
                     break;
                 case CODE_URL_ERROR:
                     Toast.makeText(FlashActivity.this, "Url异常", Toast.LENGTH_SHORT).show();
+                    enterHome();
                     break;
                 case CODE_NET_ERROR:
                     Toast.makeText(FlashActivity.this, "网络异常", Toast.LENGTH_SHORT).show();
+                    enterHome();
                     break;
                 case CODE_ENTER_HOME:
                     enterHome();
@@ -254,12 +257,18 @@ public class FlashActivity extends Activity {
 
                 @Override
                 public void onSuccess(ResponseInfo<File> responseInfo) {
-                    Toast.makeText(FlashActivity.this, "下载成功", Toast.LENGTH_SHORT).show();
+                    System.out.println("下载成功");
+                    //进入下载页面
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.addCategory(Intent.CATEGORY_DEFAULT);
+                    intent.setDataAndType(Uri.fromFile(responseInfo.result),
+                            "application/vnd.android.package-archive");
+                    startActivity(intent);
                 }
 
                 @Override
                 public void onFailure(HttpException e, String s) {
-                    Toast.makeText(FlashActivity.this, "下载失败", Toast.LENGTH_SHORT).show();
+                    System.out.println("下载失败");
                 }
             });
         }else {
