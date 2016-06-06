@@ -9,6 +9,7 @@
         android:text="@string/setting"/>
 
     <com.example.angluswang.mobilesafe.view.SettingItemView
+        android:id="@+id/siv_update"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 

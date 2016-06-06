@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -42,6 +43,8 @@ public class FlashActivity extends Activity {
 
     private VersionInfo mVersionInfo;
 
+    private SharedPreferences mPref;
+
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -75,7 +78,15 @@ public class FlashActivity extends Activity {
         mTvVersion.setText("版本号： " + getVersionName());
 
         tvProgress = (TextView) findViewById(R.id.tv_progress);
-        checkVersion();
+
+        mPref = getSharedPreferences("config", MODE_PRIVATE);
+
+        Boolean autoUpdate = mPref.getBoolean("auto_update", true);
+        if (autoUpdate) {
+            checkVersion();
+        }else {
+            mHandler.sendEmptyMessageDelayed(CODE_ENTER_HOME, 2000);
+        }
     }
 
     /**
