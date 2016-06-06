@@ -9,7 +9,7 @@
     tools:context="com.example.angluswang.mobilesafe.activity.HomeActivity">
 
     <TextView
-        android:id="@+id/textView1"
+        android:id="@+id/tv_function"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:background="#8866ff00"
@@ -21,13 +21,14 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="5dp"
-        android:layout_marginTop="5dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="8dp"
         android:ellipsize="marquee"
+        android:marqueeRepeatLimit="marquee_forever"
         android:focusable="true"
         android:focusableInTouchMode="true"
-        android:maxLines="1"
-        android:text="@string/desc_nb"
+        android:singleLine="true"
+        android:text="@string/desc"
         android:textColor="@color/black"
         android:textSize="18sp" />
 

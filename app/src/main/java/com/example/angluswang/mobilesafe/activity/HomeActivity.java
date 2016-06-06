@@ -57,8 +57,7 @@ public class HomeActivity extends Activity {
             ImageView ivItem = (ImageView) view.findViewById(R.id.iv_item);
             TextView tvItem = (TextView) view.findViewById(R.id.tv_item);
 
-            ivItem.setImageResource(mPics[position]);
-            tvItem.setText(mItems[position]);
+            ivItem.setImageResource(mPics[position]);  tvItem.setText(mItems[position]);
 
             return view;
         }
