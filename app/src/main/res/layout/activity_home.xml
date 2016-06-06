@@ -9,14 +9,8 @@
     tools:context="com.example.angluswang.mobilesafe.activity.HomeActivity">
 
     <TextView
-        android:id="@+id/tv_function"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="#8866ff00"
-        android:gravity="center"
-        android:text="@string/tv_function"
-        android:textColor="@color/black"
-        android:textSize="22sp" />
+        style="@style/TitleStyle"
+        android:text="@string/tv_function"/>
 
     <TextView
         android:layout_width="match_parent"

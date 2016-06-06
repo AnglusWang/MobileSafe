@@ -19,4 +19,6 @@
     <string name="home_safe">手机防盗</string>
     <string name="desc">这里是一个带有跑马灯效果的长文本框、后面还有很多文字勒</string>
     <string name="tv_function">功能列表</string>
+    <string name="setting">设置中心</string>
+    <string name="update_setting">自动更新设置</string>
 </resources>
