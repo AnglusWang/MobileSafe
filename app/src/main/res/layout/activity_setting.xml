@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:anglus="http://schemas.android.com/apk/res-auto"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
     android:orientation="vertical">
@@ -11,7 +12,10 @@
     <com.example.angluswang.mobilesafe.view.SettingItemView
         android:id="@+id/siv_update"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        anglus:title="自动更新设置"
+        anglus:desc_off="自动更新已关闭"
+        anglus:desc_on="自动更新已开启">
 
     </com.example.angluswang.mobilesafe.view.SettingItemView>
 
