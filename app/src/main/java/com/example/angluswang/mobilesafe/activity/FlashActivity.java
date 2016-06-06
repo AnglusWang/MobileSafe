@@ -13,6 +13,8 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,6 +46,8 @@ public class FlashActivity extends Activity {
     private VersionInfo mVersionInfo;
 
     private SharedPreferences mPref;
+
+    private RelativeLayout rfRoot;
 
     private Handler mHandler = new Handler() {
         @Override
@@ -79,6 +83,8 @@ public class FlashActivity extends Activity {
 
         tvProgress = (TextView) findViewById(R.id.tv_progress);
 
+        rfRoot = (RelativeLayout) findViewById(R.id.rl_root);
+
         mPref = getSharedPreferences("config", MODE_PRIVATE);
 
         Boolean autoUpdate = mPref.getBoolean("auto_update", true);
@@ -87,6 +93,11 @@ public class FlashActivity extends Activity {
         }else {
             mHandler.sendEmptyMessageDelayed(CODE_ENTER_HOME, 2000);
         }
+
+        //给闪屏页加一个渐变的动画
+        AlphaAnimation anim = new AlphaAnimation(0.3f, 1.0f);
+        anim.setDuration(2000);
+        rfRoot.startAnimation(anim);
     }
 
     /**
