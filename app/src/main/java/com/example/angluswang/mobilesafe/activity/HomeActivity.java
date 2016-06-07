@@ -18,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.angluswang.mobilesafe.R;
+import com.example.angluswang.mobilesafe.utils.MD5Utils;
 
 public class HomeActivity extends Activity {
 
@@ -105,7 +106,7 @@ public class HomeActivity extends Activity {
                 if (!TextUtils.isEmpty(password)) {
                     String savedPassword = mPref.getString("password", null);
 
-                    if (password.equals(savedPassword)) {
+                    if (MD5Utils.encode(password).equals(savedPassword)) {
                         Toast.makeText(HomeActivity.this, "登录成功!",
                                  Toast.LENGTH_SHORT).show();
                         dialog.dismiss();
@@ -166,7 +167,8 @@ public class HomeActivity extends Activity {
 //                                 Toast.LENGTH_SHORT).show();
 
                         // 将密码保存起来
-                         mPref.edit().putString("password", password).commit();
+                         mPref.edit().putString("password",
+                                 MD5Utils.encode(password)).commit();
 
                         dialog.dismiss();
 
