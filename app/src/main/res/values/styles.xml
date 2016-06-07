@@ -17,4 +17,14 @@
         <item name="android:textSize">22sp</item>
     </style>
 
+    <!-- 向导页的内容样式 -->
+    <style name="ContentStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginLeft">5dp</item>
+        <item name="android:layout_marginTop">5dp</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+
 </resources>

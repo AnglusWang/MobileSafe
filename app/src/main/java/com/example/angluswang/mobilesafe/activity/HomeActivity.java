@@ -107,9 +107,12 @@ public class HomeActivity extends Activity {
                     String savedPassword = mPref.getString("password", null);
 
                     if (MD5Utils.encode(password).equals(savedPassword)) {
-                        Toast.makeText(HomeActivity.this, "登录成功!",
-                                 Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(HomeActivity.this, "登录成功!",
+//                                 Toast.LENGTH_SHORT).show();
                         dialog.dismiss();
+
+                        // 跳转到手机防盗页
+                        startActivity(new Intent(HomeActivity.this, LostFindActivity.class));
 
                     } else {
                         Toast.makeText(HomeActivity.this, "密码错误!",
@@ -171,6 +174,9 @@ public class HomeActivity extends Activity {
                                  MD5Utils.encode(password)).commit();
 
                         dialog.dismiss();
+
+                        // 跳转到手机防盗页
+                        startActivity(new Intent(HomeActivity.this, LostFindActivity.class));
 
                     } else {
                         Toast.makeText(HomeActivity.this, "两次密码不一致!",
