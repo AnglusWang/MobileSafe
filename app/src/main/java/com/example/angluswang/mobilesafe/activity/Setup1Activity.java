@@ -17,6 +17,14 @@ public class Setup1Activity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setup1);
 
+        enter();
+
+    }
+
+    /**
+     * 进入下一页
+     */
+    private void enter() {
         next = (Button) findViewById(R.id.next_setup1);
         next.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -28,6 +36,5 @@ public class Setup1Activity extends Activity {
                 overridePendingTransition(R.anim.tran_in, R.anim.tran_out);
             }
         });
-
     }
 }

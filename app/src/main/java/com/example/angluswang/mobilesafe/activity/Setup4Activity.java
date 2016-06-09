@@ -22,7 +22,15 @@ public class Setup4Activity extends Activity {
 
         mPrefs = getSharedPreferences("config", MODE_PRIVATE);
 
-        //完成设置向导
+        previousPage();
+        finishSet();
+
+    }
+
+    /**
+     * 完成设置向导
+     */
+    private void finishSet() {
         finish = (Button) findViewById(R.id.finish_setup4);
         finish.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -37,8 +45,12 @@ public class Setup4Activity extends Activity {
                 overridePendingTransition(R.anim.tran_in, R.anim.tran_out);
             }
         });
+    }
 
-        //返回上一页
+    /**
+     * 返回上一页
+     */
+    private void previousPage() {
         pre = (Button) findViewById(R.id.previous_setup4);
         pre.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -50,6 +62,5 @@ public class Setup4Activity extends Activity {
             }
         });
     }
-
 
 }
