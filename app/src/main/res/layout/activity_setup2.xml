@@ -27,7 +27,7 @@
         android:layout_height="wrap_content"
         anglus:desc_off="sim卡没有绑定"
         anglus:desc_on="sim卡已经绑定"
-        anglus:title="点击绑定sim卡" />
+        anglus:title="点击绑定sim卡"/>
 
     <LinearLayout
         android:layout_width="match_parent"
