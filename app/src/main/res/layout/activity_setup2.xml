@@ -69,9 +69,13 @@
             android:layout_centerVertical="true"
             android:src="@drawable/setup2" />
 
-        <Button style="@style/NextStyle" />
+        <Button
+            android:id="@+id/next_setup2"
+            style="@style/NextStyle" />
 
-        <Button style="@style/PreviousStyle" />
+        <Button
+            android:id="@+id/previous_setup2"
+            style="@style/PreviousStyle" />
     </RelativeLayout>
 
 </LinearLayout>
