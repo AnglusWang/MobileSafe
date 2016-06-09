@@ -25,6 +25,9 @@ public class Setup3Activity extends Activity {
             public void onClick(View v) {
                 startActivity(new Intent(Setup3Activity.this, Setup4Activity.class));
                 finish();
+
+                //两个界面切换的动画
+                overridePendingTransition(R.anim.tran_in, R.anim.tran_out);
             }
         });
 
@@ -35,6 +38,8 @@ public class Setup3Activity extends Activity {
             public void onClick(View v) {
                 startActivity(new Intent(Setup3Activity.this, Setup2Activity.class));
                 finish();
+
+                overridePendingTransition(R.anim.tran_previous_in, R.anim.tran_previous_out);
             }
         });
 
