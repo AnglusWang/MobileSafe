@@ -2,6 +2,8 @@ package com.example.angluswang.mobilesafe.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.telephony.TelephonyManager;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 
@@ -35,7 +37,12 @@ public class Setup2Activity extends BaseSetupActivity {
         mNext = (Button) findViewById(R.id.next_setup2);
 
         simUpdate = (SettingItemView) findViewById(R.id.siv_sim);
-        simUpdate.setChecked(false);
+        String sim = mPref.getString("sim", null);
+        if (!TextUtils.isEmpty(sim)) {
+            simUpdate.setChecked(true);
+        }else {
+            simUpdate.setChecked(false);
+        }
     }
 
     @Override
@@ -83,13 +90,20 @@ public class Setup2Activity extends BaseSetupActivity {
             @Override
             public void onClick(View v) {
                 if (simUpdate.isChecked()) {
-
                     simUpdate.setChecked(false);
-                    mPref.edit().putBoolean("sim_bind", false).commit();
-                }else {
 
+                    //从SharedPreferences中移除sim卡序列号
+                    mPref.edit().remove("sim").commit();
+
+                }else {
                     simUpdate.setChecked(true);
-                    mPref.edit().putBoolean("sim_unbind", true).commit();
+
+                    //保存sim卡序列号
+                    TelephonyManager tm = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
+                    String simSerialNumber = tm.getSimSerialNumber();//获取sim卡序列号
+                    mPref.edit().putString("sim", simSerialNumber).commit();
+
+//                    System.out.println("sim: " + simSerialNumber);
                 }
             }
         });
