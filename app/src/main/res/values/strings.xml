@@ -21,4 +21,5 @@
     <string name="tv_function">功能列表</string>
     <string name="setting">设置中心</string>
     <string name="update_setting">自动更新设置</string>
+    <string name="sel_contact">请选择联系人</string>
 </resources>

@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.TextView;
 
 import com.example.angluswang.mobilesafe.R;
 
@@ -24,5 +26,15 @@ public class LostFindActivity extends Activity {
             startActivity(new Intent(this, Setup1Activity.class));
             finish();
         }
+
+        //重新进入向导设置
+        TextView reEnter = (TextView) findViewById(R.id.re_enter);
+        reEnter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(LostFindActivity.this, Setup1Activity.class));
+                finish();
+            }
+        });
     }
 }
