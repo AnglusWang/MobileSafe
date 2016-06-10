@@ -16,6 +16,8 @@ public class LostFindActivity extends Activity {
 
     private ImageView ivProtect;
     private TextView reSetting;
+    private TextView tvSafePhone;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +28,11 @@ public class LostFindActivity extends Activity {
 
         if (configed) {
             setContentView(R.layout.activity_lost_find);
+
+            //根据sp更新电话号码
+            tvSafePhone = (TextView) findViewById(R.id.safe_phone);
+            String phone = mPrefs.getString("safe_phone", "");
+            tvSafePhone.setText(phone);
 
             // 根据sp更新保护锁
             ivProtect = (ImageView) findViewById(R.id.iv_protect);
