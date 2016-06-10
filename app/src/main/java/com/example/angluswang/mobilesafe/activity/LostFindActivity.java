@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.angluswang.mobilesafe.R;
@@ -12,6 +13,9 @@ import com.example.angluswang.mobilesafe.R;
 public class LostFindActivity extends Activity {
 
     private SharedPreferences mPrefs;
+
+    private ImageView ivProtect;
+    private TextView reSetting;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,14 +26,23 @@ public class LostFindActivity extends Activity {
 
         if (configed) {
             setContentView(R.layout.activity_lost_find);
+
+            // 根据sp更新保护锁
+            ivProtect = (ImageView) findViewById(R.id.iv_protect);
+            boolean protect = mPrefs.getBoolean("protect", false);
+            if (protect) {
+                ivProtect.setImageResource(R.drawable.lock);
+            } else {
+                ivProtect.setImageResource(R.drawable.unlock);
+            }
+
         }else {
-            startActivity(new Intent(this, Setup1Activity.class));
+            startActivity(new Intent(LostFindActivity.this, Setup1Activity.class));
             finish();
         }
 
-        //重新进入向导设置
-        TextView reEnter = (TextView) findViewById(R.id.re_enter);
-        reEnter.setOnClickListener(new View.OnClickListener() {
+        reSetting = (TextView) findViewById(R.id.re_enter);
+        reSetting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(LostFindActivity.this, Setup1Activity.class));

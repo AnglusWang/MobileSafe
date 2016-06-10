@@ -1,9 +1,12 @@
 package com.example.angluswang.mobilesafe.activity;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
@@ -30,6 +33,18 @@ public class ContactActivity extends Activity {
         lvContact.setAdapter(new SimpleAdapter(this, contacts, R.layout.contact_list_item,
                 new String[]{"name", "phone"}, new int[]{R.id.tv_name, R.id.tv_phone}));
 
+        lvContact.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String phone = contacts.get(position).get("phone"); //获取用户点击位置的手机号码
+
+                Intent intent = new Intent();
+                intent.putExtra("phone", phone);
+                setResult(Activity.RESULT_OK, intent); // 将数据放在intent中返回给上一个页面
+
+                finish();
+            }
+        });
     }
 
     /**
