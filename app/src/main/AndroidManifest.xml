@@ -11,7 +11,7 @@
     <uses-permission android:name="android.permission.SEND_SMS"/>
     <uses-permission android:name="android.permission.READ_SMS"/>
 
-    <!--手机定位所需权限-->
+    <!-- 手机定位所需权限 -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
 
@@ -48,6 +48,9 @@
         <activity android:name=".activity.ContactActivity">
         </activity>
 
+        <activity android:name=".activity.AToolsActivity">
+        </activity>
+
         <receiver android:name=".receiver.BootCompleteReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
@@ -60,9 +63,7 @@
         </receiver>
 
         <service android:name=".service.LocationService">
-
         </service>
-
     </application>
 
 </manifest>

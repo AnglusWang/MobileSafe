@@ -53,10 +53,13 @@ public class HomeActivity extends Activity {
                         //手机防盗
                         showPasswordDailog();
                         break;
+                    case 7:
+                        //高级工具
+                        startActivity(new Intent(HomeActivity.this, AToolsActivity.class));
+                        break;
                     case 8:
                         //设置中心
-                        Intent intent = new Intent(HomeActivity.this, SettingActivity.class);
-                        startActivity(intent);
+                        startActivity(new Intent(HomeActivity.this, SettingActivity.class));
                         break;
                     default:
                         break;
