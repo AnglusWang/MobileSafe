@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.example.angluswang.mobilesafe">
 
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
@@ -9,6 +10,10 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <uses-permission android:name="android.permission.SEND_SMS"/>
     <uses-permission android:name="android.permission.READ_SMS"/>
+
+    <!--手机定位所需权限-->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
 
     <!-- To auto-complete the email text field in the login form with the user's emails -->
     <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
@@ -40,6 +45,8 @@
         </activity>
         <activity android:name=".activity.Setup4Activity">
         </activity>
+        <activity android:name=".activity.ContactActivity">
+        </activity>
 
         <receiver android:name=".receiver.BootCompleteReceiver">
             <intent-filter>
@@ -52,9 +59,6 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".activity.ContactActivity">
-
-        </activity>
     </application>
 
 </manifest>

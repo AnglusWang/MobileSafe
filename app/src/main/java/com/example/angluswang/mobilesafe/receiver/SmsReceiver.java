@@ -3,10 +3,12 @@ package com.example.angluswang.mobilesafe.receiver;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.telephony.SmsMessage;
 
 import com.example.angluswang.mobilesafe.R;
+import com.example.angluswang.mobilesafe.service.LocationService;
 
 /**
  * Created by Jeson on 2016/6/10.
@@ -35,8 +37,20 @@ public class SmsReceiver extends BroadcastReceiver {
                 player.setLooping(true);
                 player.start();
 
-                abortBroadcast();// 中断短信的传递, 从而系统短信app就收不到内容了
-            }
+                abortBroadcast();  // 中断短信的传递, 从而系统短信app就收不到内容了
+            }else if ("#*location*#".equals(messageBody)){
+                //获取经纬度信息，进行手机定位
+                System.out.println("即将进行手机定位");
+
+                context.startService(new Intent(context, LocationService.class));// 开启定位服务
+
+                SharedPreferences sp = context.getSharedPreferences("config", Context.MODE_PRIVATE);
+                String location = sp.getString("location", "getting location...");
+
+                System.out.println("location:" + location);
+
+                abortBroadcast();
+           }
         }
     }
 }
