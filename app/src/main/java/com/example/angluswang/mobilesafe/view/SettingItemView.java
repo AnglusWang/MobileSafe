@@ -87,7 +87,7 @@ public class SettingItemView extends RelativeLayout {
         //根据选择的状态更新文本描述
         if (check) {
             setDesc(mDescOn);
-        }else {
+        } else {
             setDesc(mDescOff);
         }
     }

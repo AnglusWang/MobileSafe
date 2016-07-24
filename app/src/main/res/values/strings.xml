@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Mobile Safe</string>
+    <string name="app_name">手机卫士</string>
     <string name="version_name">版本号：1.0</string>
     <string name="title_activity_login">Sign in</string>
 

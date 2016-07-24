@@ -93,7 +93,7 @@ public class FlashActivity extends Activity {
         Boolean autoUpdate = mPref.getBoolean("auto_update", true);
         if (autoUpdate) {
             checkVersion();
-        }else {
+        } else {
             mHandler.sendEmptyMessageDelayed(CODE_ENTER_HOME, 2000);
         }
 
@@ -105,6 +105,7 @@ public class FlashActivity extends Activity {
 
     /**
      * 获取版本号名
+     *
      * @return
      */
     private String getVersionName() {
@@ -126,6 +127,7 @@ public class FlashActivity extends Activity {
 
     /**
      * 获取版本号
+     *
      * @return
      */
     private int getVersionCode() {
@@ -225,7 +227,7 @@ public class FlashActivity extends Activity {
      * 显示升级对话框
      */
     private void showUpdateDialog() {
-        AlertDialog.Builder builder  = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("最新版本：" + mVersionInfo.getVersionName());
         builder.setMessage(mVersionInfo.getDescription());
         builder.setPositiveButton("立即更新", new DialogInterface.OnClickListener() {
@@ -297,7 +299,7 @@ public class FlashActivity extends Activity {
                     System.out.println("下载失败");
                 }
             });
-        }else {
+        } else {
             Toast.makeText(FlashActivity.this, "没有检测到SD卡", Toast.LENGTH_SHORT).show();
         }
     }
@@ -320,6 +322,7 @@ public class FlashActivity extends Activity {
 
     /**
      * 拷贝数据库
+     *
      * @param dbName
      */
     private void copyDB(String dbName) {
@@ -337,7 +340,7 @@ public class FlashActivity extends Activity {
         InputStream in = null;
 
         try {
-            in = getAssets().open(dbName);
+            in = getResources().getAssets().open(dbName);
             out = new FileOutputStream(destFile);
 
             int len = 0;
