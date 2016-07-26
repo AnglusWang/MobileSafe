@@ -326,21 +326,30 @@ public class FlashActivity extends Activity {
      * @param dbName
      */
     private void copyDB(String dbName) {
-        File filesDir = getFilesDir();
-        System.out.println("路径:" + filesDir.getAbsolutePath());
+//        File filesDir = getFilesDir();
+//        System.out.println("路径:" + filesDir.getAbsolutePath());
 //         要拷贝的目标地址
-        File destFile = new File(getFilesDir(), dbName);
+
+//        方式一：
+        File destFile = new File(this.getFilesDir(), dbName);
+
+//        方式二：
+//        String path = this.getApplicationContext().getFilesDir()
+//                .getAbsolutePath() + "/" + dbName;   // data/data目录
+//        File destFile = new File(path);
 
         if (destFile.exists()) {
-            System.out.println("数据库" + dbName + "已存在!");
+            System.out.println("数据库 " + dbName + " 已存在!");
             return;
+        } else {
+            System.out.println("拷贝路径为： " + destFile.getAbsolutePath());
         }
 
         FileOutputStream out = null;
         InputStream in = null;
 
         try {
-            in = getResources().getAssets().open(dbName);
+            in = this.getAssets().open(dbName);
             out = new FileOutputStream(destFile);
 
             int len = 0;
@@ -349,15 +358,26 @@ public class FlashActivity extends Activity {
             while ((len = in.read(buffer)) != -1) {
                 out.write(buffer, 0, len);
             }
+            out.flush();
 
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            try {
-                in.close();
-                out.close();
-            } catch (Exception e) {
-                e.printStackTrace();
+            if (in != null)
+            {
+                try {
+                    in.close();
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+            }
+            if (out != null)
+            {
+                try {
+                    out.close();
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
             }
         }
     }

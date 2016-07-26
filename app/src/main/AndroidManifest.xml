@@ -47,7 +47,6 @@
         </activity>
         <activity android:name=".activity.ContactActivity">
         </activity>
-
         <activity android:name=".activity.AToolsActivity">
         </activity>
 
@@ -64,6 +63,9 @@
 
         <service android:name=".service.LocationService">
         </service>
+
+        <activity android:name=".activity.AddressActivity">
+        </activity>
     </application>
 
 </manifest>

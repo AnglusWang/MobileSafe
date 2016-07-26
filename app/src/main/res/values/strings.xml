@@ -22,4 +22,7 @@
     <string name="setting">设置中心</string>
     <string name="update_setting">自动更新设置</string>
     <string name="sel_contact">请选择联系人</string>
+    <string name="address_query">归属地查询</string>
+    <string name="address_result_query">查询</string>
+    <string name="result">查询结果</string>
 </resources>
