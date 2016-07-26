@@ -2,7 +2,9 @@ package com.example.angluswang.mobilesafe.activity;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -38,6 +40,23 @@ public class AddressActivity extends Activity {
                     String address = AddressDao.getAddress(number);
                     tv_result.setText(address);
                 }
+            }
+        });
+
+        // 监听电话输入文本框
+        etNumber.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String address = AddressDao.getAddress(s.toString());
+                tv_result.setText(address);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
             }
         });
     }
