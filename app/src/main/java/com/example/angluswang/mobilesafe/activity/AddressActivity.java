@@ -6,6 +6,8 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -39,6 +41,18 @@ public class AddressActivity extends Activity {
                 if (!TextUtils.isEmpty(number)) {
                     String address = AddressDao.getAddress(number);
                     tv_result.setText(address);
+                } else {
+                    Animation shake = AnimationUtils.loadAnimation(
+                            AddressActivity.this, R.anim.shake);
+
+//                    shake.setInterpolator(new Interpolator() {
+//                        @Override
+//                        public float getInterpolation(float input) {
+//                            return 2 * input + 10;
+//                        }
+//                    });
+
+                    etNumber.startAnimation(shake);
                 }
             }
         });
