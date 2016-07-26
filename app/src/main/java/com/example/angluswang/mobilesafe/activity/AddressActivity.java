@@ -2,6 +2,7 @@ package com.example.angluswang.mobilesafe.activity;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -53,6 +54,7 @@ public class AddressActivity extends Activity {
 //                    });
 
                     etNumber.startAnimation(shake);
+                    vibrate();
                 }
             }
         });
@@ -73,5 +75,18 @@ public class AddressActivity extends Activity {
             public void afterTextChanged(Editable s) {
             }
         });
+    }
+
+    /**
+     * 手机震动
+     */
+    private void vibrate() {
+        Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+//        vibrator.vibrate(2000); // 震动 2秒
+
+        //第二个参数，从第一个位置开始循环， -1 表示不循环
+        // 等待1秒，震动2秒，等待1秒，震动2秒
+        vibrator.vibrate(new long[]{1000, 2000, 1000, 2000}, -1);
+//        vibrator.cancel(); // 取消震动
     }
 }
