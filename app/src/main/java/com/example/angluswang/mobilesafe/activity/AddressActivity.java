@@ -82,11 +82,11 @@ public class AddressActivity extends Activity {
      */
     private void vibrate() {
         Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
-//        vibrator.vibrate(2000); // 震动 2秒
+        vibrator.vibrate(500); // 震动 0.5秒
 
         //第二个参数，从第一个位置开始循环， -1 表示不循环
         // 等待1秒，震动2秒，等待1秒，震动2秒
-        vibrator.vibrate(new long[]{1000, 2000, 1000, 2000}, -1);
+//        vibrator.vibrate(new long[]{1000, 2000, 1000, 2000}, -1);
 //        vibrator.cancel(); // 取消震动
     }
 }

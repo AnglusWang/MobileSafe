@@ -36,8 +36,10 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".activity.HomeActivity"/>
-        <activity android:name=".activity.SettingActivity"/>
+        <activity android:name=".activity.HomeActivity">
+        </activity>
+        <activity android:name=".activity.SettingActivity">
+        </activity>
         <activity android:name=".activity.LostFindActivity">
         </activity>
         <activity android:name=".activity.Setup1Activity">
@@ -51,6 +53,8 @@
         <activity android:name=".activity.ContactActivity">
         </activity>
         <activity android:name=".activity.AToolsActivity">
+        </activity>
+        <activity android:name=".activity.AddressActivity">
         </activity>
 
         <receiver android:name=".receiver.BootCompleteReceiver">
@@ -66,9 +70,9 @@
 
         <service android:name=".service.LocationService">
         </service>
+        <service android:name=".service.AddressService">
+        </service>
 
-        <activity android:name=".activity.AddressActivity">
-        </activity>
     </application>
 
 </manifest>
