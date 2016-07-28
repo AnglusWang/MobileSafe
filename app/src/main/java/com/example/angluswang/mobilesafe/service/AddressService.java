@@ -5,14 +5,15 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.os.IBinder;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
+import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
 
+import com.example.angluswang.mobilesafe.R;
 import com.example.angluswang.mobilesafe.db.dao.AddressDao;
 
 /**
@@ -99,9 +100,12 @@ public class AddressService extends Service {
         params.type = WindowManager.LayoutParams.TYPE_TOAST;
         params.setTitle("Toast");
 
-        view = new TextView(this);
-        view.setText(text);
-        view.setTextColor(Color.RED);
+//        view = new TextView(this);
+//        view.setText(text);
+//        view.setTextColor(Color.RED);
+        View view = View.inflate(this, R.layout.toast_address, null);
+        TextView tvText = (TextView) view.findViewById(R.id.tv_number);
+        tvText.setText(text);
         mwm.addView(view, params); // 将View 添加到屏幕上 (Window)
 
     }
