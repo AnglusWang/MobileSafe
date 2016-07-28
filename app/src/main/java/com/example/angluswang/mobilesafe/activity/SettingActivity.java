@@ -8,6 +8,7 @@ import android.view.View;
 
 import com.example.angluswang.mobilesafe.R;
 import com.example.angluswang.mobilesafe.service.AddressService;
+import com.example.angluswang.mobilesafe.utils.ServiceStatusUtils;
 import com.example.angluswang.mobilesafe.view.SettingItemView;
 
 /**
@@ -78,12 +79,22 @@ public class SettingActivity extends Activity {
             public void onClick(View v) {
                 if (sivAddress.isChecked()) {
                     sivAddress.setChecked(false);
-                    stopService(new Intent(SettingActivity.this, AddressService.class));//停止服务
+                    stopService(new Intent(SettingActivity.this,
+                            AddressService.class));//停止服务
                 } else {
                     sivAddress.setChecked(true);
-                    startService(new Intent(SettingActivity.this, AddressService.class));//开启服务
+                    startService(new Intent(SettingActivity.this,
+                            AddressService.class));//开启服务
                 }
             }
         });
+
+        boolean running = ServiceStatusUtils.isServiceRunning(this,
+                "com.example.angluswang.mobilesafe.service.AddressService");
+        if (running) {
+            sivAddress.setChecked(true);
+        } else {
+            sivAddress.setChecked(false);
+        }
     }
 }

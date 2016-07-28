@@ -16,6 +16,9 @@ import com.example.angluswang.mobilesafe.db.dao.AddressDao;
 
 public class AddressService extends Service {
 
+    private TelephonyManager tm;
+    private MyListener listener;
+
     @Override
     public IBinder onBind(Intent intent) {
         return null;
@@ -26,8 +29,8 @@ public class AddressService extends Service {
         super.onCreate();
 
         // 监听来电
-        TelephonyManager tm = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
-        MyListener listener = new MyListener();
+        tm = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
+        listener = new MyListener();
         tm.listen(listener, PhoneStateListener.LISTEN_CALL_STATE); // 监听来电的状态
     }
 
@@ -50,5 +53,6 @@ public class AddressService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        tm.listen(listener, PhoneStateListener.LISTEN_NONE);
     }
 }
