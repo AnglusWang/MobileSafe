@@ -1,7 +1,10 @@
 package com.example.angluswang.mobilesafe.service;
 
 import android.app.Service;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.IBinder;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
@@ -18,6 +21,7 @@ public class AddressService extends Service {
 
     private TelephonyManager tm;
     private MyListener listener;
+    private OutCallReceiver outCallReceiver;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -32,6 +36,10 @@ public class AddressService extends Service {
         tm = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
         listener = new MyListener();
         tm.listen(listener, PhoneStateListener.LISTEN_CALL_STATE); // 监听来电的状态
+
+        outCallReceiver = new OutCallReceiver();
+        IntentFilter filter = new IntentFilter(Intent.ACTION_NEW_OUTGOING_CALL);
+        registerReceiver(outCallReceiver, filter); // 去电广播 注册
     }
 
     private class MyListener extends PhoneStateListener {
@@ -50,9 +58,24 @@ public class AddressService extends Service {
         }
     }
 
+    /**
+     * 去电 广播监听
+     */
+    class OutCallReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String number = getResultData();
+            String address = AddressDao.getAddress(number);
+            Toast.makeText(context, address,
+                    Toast.LENGTH_SHORT).show();
+        }
+    }
+
     @Override
     public void onDestroy() {
         super.onDestroy();
         tm.listen(listener, PhoneStateListener.LISTEN_NONE);
+
+        unregisterReceiver(outCallReceiver); // 取消注册
     }
 }
