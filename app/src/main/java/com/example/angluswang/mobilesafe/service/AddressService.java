@@ -5,10 +5,13 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
+import android.graphics.PixelFormat;
 import android.os.IBinder;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
-import android.widget.Toast;
+import android.view.WindowManager;
+import android.widget.TextView;
 
 import com.example.angluswang.mobilesafe.db.dao.AddressDao;
 
@@ -22,6 +25,8 @@ public class AddressService extends Service {
     private TelephonyManager tm;
     private MyListener listener;
     private OutCallReceiver outCallReceiver;
+    private TextView view;
+    private WindowManager mwm;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -49,8 +54,14 @@ public class AddressService extends Service {
                 case TelephonyManager.CALL_STATE_RINGING: // 电话铃声响了
                     System.out.println("电话铃响。。。");
                     String address = AddressDao.getAddress(incomingNumber);
-                    Toast.makeText(AddressService.this, address, Toast.LENGTH_LONG).show();
+//                    Toast.makeText(AddressService.this, address, Toast.LENGTH_LONG).show();
+                    showToast(address);
                     break;
+                case TelephonyManager.CALL_STATE_IDLE: // 电话闲置状态
+                    if (mwm != null && view != null) {
+                        mwm.removeView(view);
+                        view = null;
+                    }
                 default:
                     break;
             }
@@ -66,9 +77,33 @@ public class AddressService extends Service {
         public void onReceive(Context context, Intent intent) {
             String number = getResultData();
             String address = AddressDao.getAddress(number);
-            Toast.makeText(context, address,
-                    Toast.LENGTH_SHORT).show();
+//            Toast.makeText(context, address,
+//                    Toast.LENGTH_SHORT).show();
+            showToast(address);
         }
+    }
+
+    /**
+     * 自定义归属地浮窗
+     */
+    public void showToast(String text) {
+        mwm = (WindowManager)
+                this.getSystemService(WINDOW_SERVICE); // 可以在第三方app中弹出自己的浮窗
+        WindowManager.LayoutParams params = new WindowManager.LayoutParams();
+        params.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        params.width = WindowManager.LayoutParams.WRAP_CONTENT;
+        params.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+                | WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
+                | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON;
+        params.format = PixelFormat.TRANSPARENT;
+        params.type = WindowManager.LayoutParams.TYPE_TOAST;
+        params.setTitle("Toast");
+
+        view = new TextView(this);
+        view.setText(text);
+        view.setTextColor(Color.RED);
+        mwm.addView(view, params); // 将View 添加到屏幕上 (Window)
+
     }
 
     @Override
