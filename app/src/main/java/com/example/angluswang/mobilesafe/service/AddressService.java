@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.graphics.PixelFormat;
 import android.os.IBinder;
 import android.telephony.PhoneStateListener;
@@ -28,6 +29,7 @@ public class AddressService extends Service {
     private OutCallReceiver outCallReceiver;
     private TextView view;
     private WindowManager mwm;
+    private SharedPreferences mpref;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -37,6 +39,8 @@ public class AddressService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+
+        mpref = getSharedPreferences("config", MODE_PRIVATE);
 
         // 监听来电
         tm = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
@@ -104,6 +108,13 @@ public class AddressService extends Service {
 //        view.setText(text);
 //        view.setTextColor(Color.RED);
         View view = View.inflate(this, R.layout.toast_address, null);
+
+        int[] bgs = new int[]{R.drawable.call_locate_white,
+                R.drawable.call_locate_orange, R.drawable.call_locate_blue,
+                R.drawable.call_locate_gray, R.drawable.call_locate_green};
+        int style = mpref.getInt("address_style", 0);
+        view.setBackgroundResource(bgs[style]); // 根据保存的风格样式，更新背景
+
         TextView tvText = (TextView) view.findViewById(R.id.tv_number);
         tvText.setText(text);
         mwm.addView(view, params); // 将View 添加到屏幕上 (Window)
