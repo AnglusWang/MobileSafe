@@ -36,4 +36,11 @@
 
     </com.example.angluswang.mobilesafe.view.SettingClickView>
 
+    <com.example.angluswang.mobilesafe.view.SettingClickView
+        android:id="@+id/scv_address_location"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    </com.example.angluswang.mobilesafe.view.SettingClickView>
+
 </LinearLayout>

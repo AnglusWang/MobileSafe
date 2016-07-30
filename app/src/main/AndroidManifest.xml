@@ -58,6 +58,8 @@
         </activity>
         <activity android:name=".activity.AddressActivity">
         </activity>
+        <activity android:name=".activity.DragViewActivity">
+        </activity>
 
         <receiver android:name=".receiver.BootCompleteReceiver">
             <intent-filter>

@@ -24,7 +24,8 @@ public class SettingActivity extends Activity {
     private SettingItemView sivUpdate;  //自动更新设置
     private SettingItemView sivAddress;  //归属地显示设置
 
-    private SettingClickView scvAddressStyle;
+    private SettingClickView scvAddressStyle; // 归属地风格
+    private SettingClickView scvAddressLocation; // 归属地位置
 
     private SharedPreferences mPref;
 
@@ -38,6 +39,7 @@ public class SettingActivity extends Activity {
         initUpdateView();
         initAddressView();
         initAddressStyle();
+        initAddressLocation();
     }
 
     /**
@@ -123,6 +125,7 @@ public class SettingActivity extends Activity {
     }
 
     final String[] items = new String[]{"半透明", "活力橙", "卫士蓝", "金属灰", "苹果绿"};
+
     /**
      * 弹出一个单选框列表 对话框（选择风格）
      */
@@ -144,5 +147,21 @@ public class SettingActivity extends Activity {
                             }
                         })
                 .setNegativeButton("取消", null).show();
+    }
+
+    /**
+     * 修改归属地提示框显示位置
+     */
+    private void initAddressLocation() {
+        scvAddressLocation = (SettingClickView) findViewById(R.id.scv_address_location);
+        scvAddressLocation.setTitle("归属地提示框显示设置");
+        scvAddressLocation.setDesc("设置归属地提示框的显示位置");
+        scvAddressLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 跳转到归属地提示框设置界面
+                startActivity(new Intent(SettingActivity.this, DragViewActivity.class));
+            }
+        });
     }
 }
