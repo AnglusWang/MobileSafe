@@ -58,7 +58,9 @@
         </activity>
         <activity android:name=".activity.AddressActivity">
         </activity>
-        <activity android:name=".activity.DragViewActivity">
+        <activity
+            android:name=".activity.DragViewActivity"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar">
         </activity>
 
         <receiver android:name=".receiver.BootCompleteReceiver">
@@ -73,9 +75,9 @@
         </receiver>
         <!--去电归属地显示-->
         <!--<receiver android:name=".receiver.OutCallReceiver">-->
-            <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.NEW_OUTGOING_CALL"/>-->
-            <!--</intent-filter>-->
+        <!--<intent-filter>-->
+        <!--<action android:name="android.intent.action.NEW_OUTGOING_CALL"/>-->
+        <!--</intent-filter>-->
         <!--</receiver>-->
 
         <service android:name=".service.LocationService">
