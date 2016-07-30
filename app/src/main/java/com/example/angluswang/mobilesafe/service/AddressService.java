@@ -10,6 +10,7 @@ import android.graphics.PixelFormat;
 import android.os.IBinder;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
+import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
@@ -102,7 +103,15 @@ public class AddressService extends Service {
                 | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON;
         params.format = PixelFormat.TRANSPARENT;
         params.type = WindowManager.LayoutParams.TYPE_TOAST;
+        params.gravity = Gravity.LEFT + Gravity.TOP; //将重心位置设置为左上方
         params.setTitle("Toast");
+
+        // WindowsManager 层归属地位置设定
+        int lastX = mpref.getInt("lastX", 0);
+        int lastY = mpref.getInt("lastY", 100);
+
+        params.x = lastX; // 基于左上方的偏移量
+        params.y = lastY;
 
 //        view = new TextView(this);
 //        view.setText(text);

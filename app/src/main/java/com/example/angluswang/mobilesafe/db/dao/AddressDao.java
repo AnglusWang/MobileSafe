@@ -17,7 +17,6 @@ public class AddressDao {
     public static String getAddress(String number) {
 
         String address = "未知号码";
-        //获取数据对象
         SQLiteDatabase database = SQLiteDatabase.openDatabase(PATH, null,
                 SQLiteDatabase.OPEN_READONLY);
 
