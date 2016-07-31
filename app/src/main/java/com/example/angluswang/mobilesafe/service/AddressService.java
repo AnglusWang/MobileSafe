@@ -7,10 +7,12 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.PixelFormat;
+import android.graphics.Point;
 import android.os.IBinder;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
@@ -31,6 +33,13 @@ public class AddressService extends Service {
     private View view;
     private WindowManager mwm;
     private SharedPreferences mpref;
+    private WindowManager.LayoutParams params;
+
+    private int startX; //起始点坐标
+    private int startY;
+
+    private int winWidth; // 屏幕宽高
+    private int winHight;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -95,14 +104,20 @@ public class AddressService extends Service {
     public void showToast(String text) {
         mwm = (WindowManager)
                 this.getSystemService(WINDOW_SERVICE); // 可以在第三方app中弹出自己的浮窗
-        WindowManager.LayoutParams params = new WindowManager.LayoutParams();
+        // 获取屏幕宽高
+        final Point point = new Point();
+        mwm.getDefaultDisplay().getSize(point);
+        winWidth = point.x;
+        winHight = point.y;
+
+        params = new WindowManager.LayoutParams();
         params.height = WindowManager.LayoutParams.WRAP_CONTENT;
         params.width = WindowManager.LayoutParams.WRAP_CONTENT;
         params.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
-                | WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
                 | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON;
+//        | WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE  没有触摸事件
         params.format = PixelFormat.TRANSPARENT;
-        params.type = WindowManager.LayoutParams.TYPE_TOAST;
+        params.type = WindowManager.LayoutParams.TYPE_PHONE;
         params.gravity = Gravity.LEFT + Gravity.TOP; //将重心位置设置为左上方
         params.setTitle("Toast");
 
@@ -123,6 +138,53 @@ public class AddressService extends Service {
                 R.drawable.call_locate_gray, R.drawable.call_locate_green};
         int style = mpref.getInt("address_style", 0);
         view.setBackgroundResource(bgs[style]); // 根据保存的风格样式，更新背景
+
+        // 设置触摸事件，实现可拖拽效果
+        view.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        startX = (int) event.getRawX();
+                        startY = (int) event.getRawY();
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+                        int endX = (int) event.getRawX();
+                        int endY = (int) event.getRawY();
+
+                        int dx = endX - startX;
+                        int dy = endY - startY;
+
+                        // 更新浮窗的位置
+                        params.x += dx;
+                        params.y += dy;
+                        // 防止坐标偏离屏幕
+                        if (params.x < 0) {
+                            params.x = 0;
+                        }
+                        if (params.y < 0) {
+                            params.y = 0;
+                        }
+                        if (params.x > winWidth - view.getWidth()) {
+                            params.x = winWidth - view.getWidth();
+                        }
+                        if (params.y > winHight - view.getHeight()) {
+                            params.y = winHight - view.getHeight();
+                        }
+
+                        mwm.updateViewLayout(view, params);
+
+                        startX = (int) event.getRawX();
+                        startY = (int) event.getRawY();
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        mpref.edit().putInt("lastX", params.x)
+                                .putInt("lastY", params.y).apply();
+                        break;
+                }
+                return true;
+            }
+        });
 
         TextView tvText = (TextView) view.findViewById(R.id.tv_number);
         tvText.setText(text);

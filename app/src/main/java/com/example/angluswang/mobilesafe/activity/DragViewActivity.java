@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.SharedPreferences;
 import android.graphics.Point;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
@@ -56,7 +57,7 @@ public class DragViewActivity extends Activity {
         getWindowManager().getDefaultDisplay().getSize(point);
         final int winWidth = point.x;
         final int winHight = point.y;
-        
+
         if (lastY > winHight / 2) { //上边文本框显示, 下边文本框隐藏
             tvTop.setVisibility(View.VISIBLE);
             tvBottom.setVisibility(View.INVISIBLE);
@@ -119,7 +120,24 @@ public class DragViewActivity extends Activity {
                                 .putInt("lastY", imgDrag.getTop()).apply();
                         break;
                 }
-                return true;
+                return false; // 让事件可以往下传递，使得双击事件可以响应
+            }
+        });
+
+        // 设置触摸事件(实现双击居中效果)
+        final long[] mHits = new long[2]; // 数组长度表示点击次数
+        imgDrag.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                System.arraycopy(mHits, 1, mHits, 0, mHits.length - 1);
+                mHits[mHits.length - 1] = SystemClock.uptimeMillis(); //开机后开始计算的时间
+                if (mHits[0] >= SystemClock.uptimeMillis() - 500) {
+                    // 实现居中的逻辑代码
+//                    Toast.makeText(DragViewActivity.this, "双击！",
+//                            Toast.LENGTH_SHORT).show();
+                    imgDrag.layout(winWidth / 2 - imgDrag.getWidth() / 2, imgDrag.getTop(),
+                            winWidth / 2 + imgDrag.getWidth() / 2, imgDrag.getBottom());
+                }
             }
         });
     }
