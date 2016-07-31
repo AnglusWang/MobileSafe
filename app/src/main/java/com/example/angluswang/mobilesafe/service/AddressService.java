@@ -108,7 +108,7 @@ public class AddressService extends Service {
 
         // WindowsManager 层归属地位置设定
         int lastX = mpref.getInt("lastX", 0);
-        int lastY = mpref.getInt("lastY", 100);
+        int lastY = mpref.getInt("lastY", 400);
 
         params.x = lastX; // 基于左上方的偏移量
         params.y = lastY;

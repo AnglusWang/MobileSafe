@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.widget.RelativeLayout;
@@ -331,52 +332,49 @@ public class FlashActivity extends Activity {
 //         要拷贝的目标地址
 
 //        方式一：
-        File destFile = new File(this.getFilesDir(), dbName);
-
-//        方式二：
 //        String path = this.getApplicationContext().getFilesDir()
 //                .getAbsolutePath() + "/" + dbName;   // data/data目录
 //        File destFile = new File(path);
+//
+//        方式二：
 
+        File destFile = new File(getFilesDir(), dbName);
         if (destFile.exists()) {
-            System.out.println("数据库 " + dbName + " 已存在!");
-            return;
+            Log.i("db:", "数据库 " + dbName + " 已存在!");
         } else {
-            System.out.println("拷贝路径为： " + destFile.getAbsolutePath());
-        }
+            Log.i("db:", "拷贝路径为： " + destFile.getAbsolutePath());
 
-        FileOutputStream out = null;
-        InputStream in = null;
+            FileOutputStream out = null;
+            InputStream in = null;
 
-        try {
-            in = this.getAssets().open(dbName);
-            out = new FileOutputStream(destFile);
+            try {
+                in = getResources().getAssets().open(dbName);
+                out = new FileOutputStream(destFile);
 
-            int len = 0;
-            byte[] buffer = new byte[1024];
+                int len = 0;
+                byte[] buffer = new byte[1024];
 
-            while ((len = in.read(buffer)) != -1) {
-                out.write(buffer, 0, len);
-            }
-            out.flush();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (in != null)
-            {
-                try {
-                    in.close();
-                } catch (IOException e1) {
-                    e1.printStackTrace();
+                while ((len = in.read(buffer)) > 0) {
+                    out.write(buffer, 0, len);
                 }
-            }
-            if (out != null)
-            {
-                try {
-                    out.close();
-                } catch (IOException e1) {
-                    e1.printStackTrace();
+                out.flush();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                if (in != null) {
+                    try {
+                        in.close();
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
+                }
+                if (out != null) {
+                    try {
+                        out.close();
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
                 }
             }
         }

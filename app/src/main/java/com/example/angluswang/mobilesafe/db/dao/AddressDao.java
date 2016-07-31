@@ -12,7 +12,7 @@ public class AddressDao {
 
     // 注意,该路径必须是data/data目录的文件,否则数据库访问不到
     private static final String PATH =
-            "data/data/com.example.angluswang.mobilesafe/files/address.db";
+            "/data/data/com.example.angluswang.mobilesafe/files/address.db";
 
     public static String getAddress(String number) {
 
