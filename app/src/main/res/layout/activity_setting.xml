@@ -29,6 +29,16 @@
 
     </com.example.angluswang.mobilesafe.view.SettingItemView>
 
+    <com.example.angluswang.mobilesafe.view.SettingItemView
+        android:id="@+id/siv_rocket"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        anglus:title="加速小火箭设置"
+        anglus:desc_off="小火箭已关闭"
+        anglus:desc_on="小火箭已开启">
+
+    </com.example.angluswang.mobilesafe.view.SettingItemView>
+
     <com.example.angluswang.mobilesafe.view.SettingClickView
         android:id="@+id/scv_address_style"
         android:layout_width="match_parent"

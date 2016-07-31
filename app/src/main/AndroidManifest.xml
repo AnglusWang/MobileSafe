@@ -62,6 +62,11 @@
             android:name=".activity.DragViewActivity"
             android:theme="@android:style/Theme.Translucent.NoTitleBar">
         </activity>
+        <activity
+            android:name=".activity.RocketBgActivity"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar">
+
+        </activity>
 
         <receiver android:name=".receiver.BootCompleteReceiver">
             <intent-filter>
@@ -83,6 +88,8 @@
         <service android:name=".service.LocationService">
         </service>
         <service android:name=".service.AddressService">
+        </service>
+        <service android:name=".service.RocketService">
         </service>
 
     </application>

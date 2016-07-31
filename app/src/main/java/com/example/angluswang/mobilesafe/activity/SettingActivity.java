@@ -10,6 +10,7 @@ import android.view.View;
 
 import com.example.angluswang.mobilesafe.R;
 import com.example.angluswang.mobilesafe.service.AddressService;
+import com.example.angluswang.mobilesafe.service.RocketService;
 import com.example.angluswang.mobilesafe.utils.ServiceStatusUtils;
 import com.example.angluswang.mobilesafe.view.SettingClickView;
 import com.example.angluswang.mobilesafe.view.SettingItemView;
@@ -23,6 +24,7 @@ public class SettingActivity extends Activity {
 
     private SettingItemView sivUpdate;  //自动更新设置
     private SettingItemView sivAddress;  //归属地显示设置
+    private SettingItemView sivRocket; // 小火箭设置
 
     private SettingClickView scvAddressStyle; // 归属地风格
     private SettingClickView scvAddressLocation; // 归属地位置
@@ -38,6 +40,7 @@ public class SettingActivity extends Activity {
 
         initUpdateView();
         initAddressView();
+        initRocketView();
         initAddressStyle();
         initAddressLocation();
     }
@@ -66,12 +69,12 @@ public class SettingActivity extends Activity {
 
                     sivUpdate.setChecked(false);
 //                    sivUpdate.setDesc("自动更新已关闭");
-                    mPref.edit().putBoolean("auto_update", false).commit();
+                    mPref.edit().putBoolean("auto_update", false).apply();
                 } else {
 
                     sivUpdate.setChecked(true);
 //                    sivUpdate.setDesc("自动更新已开启");
-                    mPref.edit().putBoolean("auto_update", true).commit();
+                    mPref.edit().putBoolean("auto_update", true).apply();
                 }
             }
         });
@@ -107,6 +110,36 @@ public class SettingActivity extends Activity {
     }
 
     /**
+     * 初始化归属地显示设置开关
+     */
+    private void initRocketView() {
+        sivRocket = (SettingItemView) findViewById(R.id.siv_rocket);
+
+        Boolean isOpen = mPref.getBoolean("rocket_status", true);
+        if (isOpen) {
+            sivRocket.setChecked(true);
+        } else {
+            sivRocket.setChecked(false);
+        }
+        sivRocket.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (sivRocket.isChecked()) {
+                    sivRocket.setChecked(false);
+                    stopService(new Intent(SettingActivity.this,
+                            RocketService.class)); //开启小火箭
+                    mPref.edit().putBoolean("rocket_status", false).apply();
+                } else {
+                    sivRocket.setChecked(true);
+                    startService(new Intent(SettingActivity.this,
+                            RocketService.class)); //关闭小火箭
+                    mPref.edit().putBoolean("rocket_status", true).apply();
+                }
+            }
+        });
+    }
+
+    /**
      * 修改提示框显示风格
      */
     private void initAddressStyle() {
@@ -124,7 +157,7 @@ public class SettingActivity extends Activity {
         });
     }
 
-    final String[] items = new String[]{"半透明", "活力橙", "卫士蓝", "金属灰", "苹果绿"};
+    private final String[] items = new String[]{"半透明", "活力橙", "卫士蓝", "金属灰", "苹果绿"};
 
     /**
      * 弹出一个单选框列表 对话框（选择风格）
@@ -139,7 +172,7 @@ public class SettingActivity extends Activity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 // 保存选择的风格
-                                mPref.edit().putInt("address_style", which).commit();
+                                mPref.edit().putInt("address_style", which).apply();
 
                                 dialog.dismiss(); // 选择后，让dialog 消失
 
