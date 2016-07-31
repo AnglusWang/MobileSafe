@@ -95,7 +95,6 @@ public class RocketService extends Service {
                         if (params.x > winWidth - view.getWidth()) {
                             params.x = winWidth - view.getWidth();
                         }
-
                         if (params.y > winHeight - view.getHeight()) {
                             params.y = winHeight - view.getHeight();
                         }

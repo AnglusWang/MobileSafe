@@ -53,6 +53,10 @@ public class HomeActivity extends Activity {
                         //手机防盗
                         showPasswordDailog();
                         break;
+                    case 1:
+                        // 通讯卫士：
+                        startActivity(new Intent(HomeActivity.this, CallSafeActivity.class));
+                        break;
                     case 7:
                         //高级工具
                         startActivity(new Intent(HomeActivity.this, AToolsActivity.class));

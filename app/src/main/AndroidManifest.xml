@@ -65,7 +65,8 @@
         <activity
             android:name=".activity.RocketBgActivity"
             android:theme="@android:style/Theme.Translucent.NoTitleBar">
-
+        </activity>
+        <activity android:name=".activity.CallSafeActivity">
         </activity>
 
         <receiver android:name=".receiver.BootCompleteReceiver">
