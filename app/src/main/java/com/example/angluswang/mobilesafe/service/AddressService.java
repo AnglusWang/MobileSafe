@@ -28,7 +28,7 @@ public class AddressService extends Service {
     private TelephonyManager tm;
     private MyListener listener;
     private OutCallReceiver outCallReceiver;
-    private TextView view;
+    private View view;
     private WindowManager mwm;
     private SharedPreferences mpref;
 
@@ -116,7 +116,7 @@ public class AddressService extends Service {
 //        view = new TextView(this);
 //        view.setText(text);
 //        view.setTextColor(Color.RED);
-        View view = View.inflate(this, R.layout.toast_address, null);
+        view = View.inflate(this, R.layout.toast_address, null);
 
         int[] bgs = new int[]{R.drawable.call_locate_white,
                 R.drawable.call_locate_orange, R.drawable.call_locate_blue,
