@@ -34,7 +34,6 @@ public class BlackNumberDao {
         cv.put("number", number);
         cv.put("mode", mode);
         long rowId = db.insert("black_number", null, cv);
-        db.close();
         return rowId != -1;
     }
 
@@ -47,7 +46,6 @@ public class BlackNumberDao {
     public boolean delete(String number) {
         SQLiteDatabase db = helper.getWritableDatabase();
         int rowNumber = db.delete("black_number", "number=?", new String[]{number});
-        db.close();
         return rowNumber == 1;
     }
 
@@ -62,7 +60,6 @@ public class BlackNumberDao {
         ContentValues cv = new ContentValues();
         cv.put("mode", mode);
         int rowNumber = db.update("black_number", cv, "number=?", new String[]{number});
-        db.close();
         return rowNumber != 0;
     }
 
@@ -74,7 +71,7 @@ public class BlackNumberDao {
     public String findNumber(String number) {
         SQLiteDatabase db = helper.getReadableDatabase();
         String mode = "";
-        Cursor cursor = db.query("black_number", new String[]{mode},
+        Cursor cursor = db.query("black_number", new String[]{"mode"},
                 "number=?", new String[]{number}, null, null, null);
         if (cursor.moveToNext()) {
             mode = cursor.getString(0);
