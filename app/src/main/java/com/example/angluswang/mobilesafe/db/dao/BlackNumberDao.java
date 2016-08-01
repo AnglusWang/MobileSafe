@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.SystemClock;
 
 import com.example.angluswang.mobilesafe.entity.BlackNumberInfo;
 
@@ -97,7 +98,51 @@ public class BlackNumberDao {
         }
         cursor.close();
         db.close();
+//        try {
+//            Thread.sleep(3000);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+        SystemClock.sleep(3000);
         return blackNumInfos;
+    }
+
+    /**
+     * 分页加载数据
+     *
+     * @param pageNumber 当前页数
+     * @param pageSize   每一页的数据个数
+     * @return
+     */
+    public List<BlackNumberInfo> findPage(int pageNumber, int pageSize) {
+        SQLiteDatabase db = helper.getReadableDatabase();
+        Cursor cursor = db.rawQuery("select number,mode from black_number limit ? offset ?",
+                new String[]{String.valueOf(pageSize),
+                String.valueOf(pageSize * pageNumber)});
+        List<BlackNumberInfo> blackNumberInfos = new ArrayList<BlackNumberInfo>();
+        while (cursor.moveToNext()) {
+            BlackNumberInfo blackNumberInfo = new BlackNumberInfo();
+            blackNumberInfo.setMode(cursor.getString(1));
+            blackNumberInfo.setNumber(cursor.getString(0));
+            blackNumberInfos.add(blackNumberInfo);
+        }
+        cursor.close();
+        db.close();
+        return blackNumberInfos;
+    }
+
+    /**
+     * 获取总的记录数
+     * @return counts
+     */
+    public int getTotalNumber(){
+        SQLiteDatabase db = helper.getReadableDatabase();
+        Cursor cursor = db.rawQuery("select count(*) from black_number", null);
+        cursor.moveToNext();
+        int counts = cursor.getInt(0);
+        cursor.close();
+        db.close();
+        return counts;
     }
 
 }

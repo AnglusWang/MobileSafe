@@ -3,9 +3,14 @@ package com.example.angluswang.mobilesafe.activity;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -16,6 +21,7 @@ import com.example.angluswang.mobilesafe.db.dao.BlackNumberDao;
 import com.example.angluswang.mobilesafe.entity.BlackNumberInfo;
 
 import java.util.List;
+import java.util.Random;
 
 /**
  * Created by Jeson on 2016/7/31.
@@ -27,6 +33,13 @@ public class CallSafeActivity extends Activity {
     private BlackNumberDao dao;
     private CallSafeAdapter adapter;
 
+    private EditText etPageNumber;
+    private TextView tvPageNumber;
+
+    private int mCurrentNumber = 0;     // 当前页面
+    private int mPageSize = 20;     // 每页展示数据个数
+    private int mTotalPage;     // 总的页数
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,24 +47,103 @@ public class CallSafeActivity extends Activity {
 
         initView();
         initData();
+
+        //初始化黑名单数据
+        BlackNumberDao dao = new BlackNumberDao(this);
+        Random random = new Random();
+        for (int i = 0; i < 200; i++) {
+            Long num = 13173849000L + i;
+            dao.add(num + "", String.valueOf(random.nextInt(3) + 1));
+        }
     }
 
-    private void initData() {
-        dao = new BlackNumberDao(CallSafeActivity.this);
-//        // 初始化黑名单数据
-//        Random random = new Random();
-//        for (int i = 0; i < 100; i++) {
-//            Long num = 13173849000L + i;
-//            dao.add(num + "", String.valueOf(random.nextInt(3) + 1));
-//        }
+    private Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            adapter = new CallSafeAdapter(blackNumInfos, CallSafeActivity.this);
+            lvBlackPhone.setAdapter(adapter);
+        }
+    };
 
-        blackNumInfos = dao.findAllNumber();
-        adapter = new CallSafeAdapter(blackNumInfos, this);
-        lvBlackPhone.setAdapter(adapter);
+    private void initData() {
+
+            new Thread() {
+            public void run() {
+                dao = new BlackNumberDao(CallSafeActivity.this);
+
+                // 设置页数View
+                mTotalPage = dao.getTotalNumber() / mPageSize;
+//                tvPageNumber.setText(mCurrentNumber / mTotalPage + "");
+
+//                blackNumInfos = dao.findAllNumber();
+                blackNumInfos = dao.findPage(mCurrentNumber, mPageSize);
+                handler.sendEmptyMessage(0);
+            }
+        }.start();
     }
 
     private void initView() {
         lvBlackPhone = (ListView) findViewById(R.id.lv_black_number);
+        // 展示加载进度条
+        LinearLayout ll_pd = (LinearLayout) findViewById(R.id.ll_pd);
+        ll_pd.setVisibility(View.VISIBLE);
+
+        etPageNumber = (EditText) findViewById(R.id.et_page_number);
+        tvPageNumber = (TextView) findViewById(R.id.tv_page_number);
+
+    }
+
+    /**
+     * 上一页 按钮点击事件
+     *
+     * @param view
+     */
+    public void prePage(View view) {
+        if (mCurrentNumber <= 0) {
+            Toast.makeText(this, "已经是第一页了",
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+        mCurrentNumber--;
+        initData();
+    }
+
+    /**
+     * 下一页 按钮点击事件
+     *
+     * @param view
+     */
+    public void nextPage(View view) {
+        //判断当前的页码不能大于总的页数
+        if (mCurrentNumber >= (mTotalPage - 1)) {
+            Toast.makeText(this, "已经是最后一页了",
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+        mCurrentNumber++;
+        initData();
+    }
+
+    /**
+     * 跳转 按钮点击事件
+     *
+     * @param view
+     */
+    public void jump(View view) {
+        String strPageNumber = etPageNumber.getText().toString().trim();
+        if (TextUtils.isEmpty(strPageNumber)) {
+            Toast.makeText(this, "请输入正确的页码",
+                    Toast.LENGTH_SHORT).show();
+        } else {
+            int number = Integer.parseInt(strPageNumber);
+            if (number >= 0 && number <= (mTotalPage - 1)) {
+                mCurrentNumber = number;
+                initData();
+            } else {
+                Toast.makeText(this, "请输入正确的页码",
+                        Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     /**
