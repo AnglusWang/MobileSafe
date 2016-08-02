@@ -9,6 +9,7 @@ import android.os.Message;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -37,12 +38,15 @@ public class CallSafeActivity extends Activity {
     private BlackNumberDao dao;
     private CallSafeAdapter adapter;
 
-    private EditText etPageNumber;
-    private TextView tvPageNumber;
+//    private EditText etPageNumber;
+//    private TextView tvPageNumber;
 
-    private int mCurrentNumber = 0;     // 当前页面
+//    private int mCurrentNumber = 0;     // 当前页面
+
     private int mPageSize = 20;     // 每页展示数据个数
     private int mTotalPage;     // 总的页数
+
+    private int mStartIndex;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,14 +55,6 @@ public class CallSafeActivity extends Activity {
 
         initView();
         initData();
-
-//        //初始化黑名单数据
-//        BlackNumberDao dao = new BlackNumberDao(this);
-//        Random random = new Random();
-//        for (int i = 0; i < 200; i++) {
-//            Long num = 13173849000L + i;
-//            dao.add(num + "", String.valueOf(random.nextInt(3) + 1));
-//        }
     }
 
     private Handler handler = new Handler() {
@@ -66,7 +62,6 @@ public class CallSafeActivity extends Activity {
         public void handleMessage(Message msg) {
             adapter = new CallSafeAdapter(blackNumInfos, CallSafeActivity.this);
             lvBlackPhone.setAdapter(adapter);
-            tvPageNumber.setText(mCurrentNumber + "/" + mTotalPage);
         }
     };
 
@@ -75,11 +70,15 @@ public class CallSafeActivity extends Activity {
         new Thread() {
             public void run() {
                 dao = new BlackNumberDao(CallSafeActivity.this);
-                // 设置页数View
-                mTotalPage = dao.getTotalNumber() / mPageSize;
+                mTotalPage = dao.getTotalNumber();
+                //分批加载数据
+                if (blackNumInfos == null) {
+                    blackNumInfos = dao.findBatch(mStartIndex, mPageSize);
+                } else {
+                    //把后面的数据。追加到 blackNumInfos 集合里面。防止黑名单被覆盖
+                    blackNumInfos.addAll(dao.findBatch(mStartIndex, mPageSize));
+                }
 
-//                blackNumInfos = dao.findAllNumber();
-                blackNumInfos = dao.findPage(mCurrentNumber, mPageSize);
                 handler.sendEmptyMessage(0);
             }
         }.start();
@@ -91,9 +90,48 @@ public class CallSafeActivity extends Activity {
         LinearLayout ll_pd = (LinearLayout) findViewById(R.id.ll_pd);
         ll_pd.setVisibility(View.INVISIBLE);
 
-        etPageNumber = (EditText) findViewById(R.id.et_page_number);
-        tvPageNumber = (TextView) findViewById(R.id.tv_page_number);
+        //设置listView的滚动监听
+        lvBlackPhone.setOnScrollListener(new AbsListView.OnScrollListener() {
+            /**
+             * 状态改变时 回调的方法
+             * @param view
+             * @param scrollState  表示滚动的状态
+             *
+             * AbsListView.OnScrollListener.SCROLL_STATE_IDLE 闲置状态
+             * AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL 手指触摸的时候的状态
+             * AbsListView.OnScrollListener.SCROLL_STATE_FLING 惯性
+             */
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
 
+                switch (scrollState) {
+                    case AbsListView.OnScrollListener.SCROLL_STATE_IDLE:
+                        //获取到最后一条显示的数据
+                        int lastVisiblePosition = lvBlackPhone.getLastVisiblePosition();
+//                        System.out.println("lastVisiblePosition==========" + lastVisiblePosition);
+                        if (lastVisiblePosition == blackNumInfos.size() - 1) {
+                            // 加载更多的数据。 更改加载数据的开始位置
+                            mStartIndex += mPageSize;
+                            if (mStartIndex >= mTotalPage) {
+                                Toast.makeText(getApplicationContext(), "没有更多的数据了!",
+                                        Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+                            initData();
+                        }
+                        break;
+                    default:
+                        break;
+                }
+
+            }
+
+            //listView 滚动的时候调用的方法, 时时调用
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem,
+                                 int visibleItemCount, int totalItemCount) {
+            }
+        });
     }
 
     /**
@@ -101,53 +139,53 @@ public class CallSafeActivity extends Activity {
      *
      * @param view
      */
-    public void prePage(View view) {
-        if (mCurrentNumber <= 0) {
-            Toast.makeText(this, "已经是第一页了",
-                    Toast.LENGTH_SHORT).show();
-            return;
-        }
-        mCurrentNumber--;
-        initData();
-    }
+//    public void prePage(View view) {
+//        if (mCurrentNumber <= 0) {
+//            Toast.makeText(this, "已经是第一页了",
+//                    Toast.LENGTH_SHORT).show();
+//            return;
+//        }
+//        mCurrentNumber--;
+//        initData();
+//    }
 
     /**
      * 下一页 按钮点击事件
      *
      * @param view
      */
-    public void nextPage(View view) {
-        //判断当前的页码不能大于总的页数
-        if (mCurrentNumber >= (mTotalPage - 1)) {
-            Toast.makeText(this, "已经是最后一页了",
-                    Toast.LENGTH_SHORT).show();
-            return;
-        }
-        mCurrentNumber++;
-        initData();
-    }
+//    public void nextPage(View view) {
+//        //判断当前的页码不能大于总的页数
+//        if (mCurrentNumber >= (mTotalPage - 1)) {
+//            Toast.makeText(this, "已经是最后一页了",
+//                    Toast.LENGTH_SHORT).show();
+//            return;
+//        }
+//        mCurrentNumber++;
+//        initData();
+//    }
 
     /**
      * 跳转 按钮点击事件
      *
      * @param view
      */
-    public void jump(View view) {
-        String strPageNumber = etPageNumber.getText().toString().trim();
-        if (TextUtils.isEmpty(strPageNumber)) {
-            Toast.makeText(this, "请输入正确的页码",
-                    Toast.LENGTH_SHORT).show();
-        } else {
-            int number = Integer.parseInt(strPageNumber);
-            if (number >= 0 && number <= (mTotalPage - 1)) {
-                mCurrentNumber = number;
-                initData();
-            } else {
-                Toast.makeText(this, "请输入正确的页码",
-                        Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
+//    public void jump(View view) {
+//        String strPageNumber = etPageNumber.getText().toString().trim();
+//        if (TextUtils.isEmpty(strPageNumber)) {
+//            Toast.makeText(this, "请输入正确的页码",
+//                    Toast.LENGTH_SHORT).show();
+//        } else {
+//            int number = Integer.parseInt(strPageNumber);
+//            if (number >= 0 && number <= (mTotalPage - 1)) {
+//                mCurrentNumber = number;
+//                initData();
+//            } else {
+//                Toast.makeText(this, "请输入正确的页码",
+//                        Toast.LENGTH_SHORT).show();
+//            }
+//        }
+//    }
 
     /**
      * 添加黑名单 按钮点击事件
@@ -222,7 +260,7 @@ public class CallSafeActivity extends Activity {
      * list_view 适配器
      */
     private class CallSafeAdapter extends MyBaseAdapter<BlackNumberInfo> {
-        private CallSafeAdapter(List lists, Context mContext) {
+        private CallSafeAdapter(List<BlackNumberInfo> lists, Context mContext) {
             super(lists, mContext);
         }
 

@@ -52,46 +52,4 @@
             layout="@layout/list_view"/>
     </FrameLayout>
 
-    <LinearLayout
-        android:id="@+id/ll_page_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:onClick="prePage"
-            android:text="上一页"/>
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:onClick="nextPage"
-            android:text="下一页"/>
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:onClick="jump"
-            android:text="跳转至"/>
-
-        <EditText
-            android:id="@+id/et_page_number"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:inputType="number"/>
-
-        <TextView
-            android:id="@+id/tv_page_number"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="0/9"
-            android:textSize="18sp"/>
-    </LinearLayout>
-
 </LinearLayout>
