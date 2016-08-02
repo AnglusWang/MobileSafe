@@ -260,6 +260,7 @@ public class CallSafeActivity extends Activity {
      * list_view 适配器
      */
     private class CallSafeAdapter extends MyBaseAdapter<BlackNumberInfo> {
+
         private CallSafeAdapter(List<BlackNumberInfo> lists, Context mContext) {
             super(lists, mContext);
         }

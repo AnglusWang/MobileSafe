@@ -30,8 +30,6 @@
             android:text="内存可用:xxx"
             android:textColor="#000"
             android:textSize="18sp"/>
-
-
     </LinearLayout>
 
     <FrameLayout
@@ -48,7 +46,8 @@
             android:layout_height="wrap_content"
             android:background="#ff888888"
             android:text="用户程序(5)个"
-            android:textColor="#fff"/>
+            android:textColor="#fff"
+            android:visibility="invisible"/>
     </FrameLayout>
 
 </LinearLayout>

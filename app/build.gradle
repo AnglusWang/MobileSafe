@@ -13,7 +13,7 @@ android {
     buildToolsVersion "23.0.3"
     defaultConfig {
         applicationId "com.example.angluswang.mobilesafe"
-        minSdkVersion 14
+        minSdkVersion 16
         targetSdkVersion 23
         versionCode 3
         versionName "1.5"
