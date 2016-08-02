@@ -4,9 +4,25 @@
               android:layout_height="match_parent"
               android:orientation="vertical">
 
-    <TextView
-        style="@style/TitleStyle"
-        android:text="黑名单管理"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            style="@style/TitleStyle"
+            android:text="黑名单管理"/>
+
+        <Button
+            android:onClick="addBlackNumber"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:background="#8866ff00"
+            android:text="添加"/>
+    </RelativeLayout
+        >
+
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -74,7 +90,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="1/10"
+            android:text="0/9"
             android:textSize="18sp"/>
     </LinearLayout>
 

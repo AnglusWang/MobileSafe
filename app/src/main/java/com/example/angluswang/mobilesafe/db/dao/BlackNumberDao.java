@@ -119,7 +119,30 @@ public class BlackNumberDao {
         Cursor cursor = db.rawQuery("select number,mode from black_number limit ? offset ?",
                 new String[]{String.valueOf(pageSize),
                 String.valueOf(pageSize * pageNumber)});
-        List<BlackNumberInfo> blackNumberInfos = new ArrayList<BlackNumberInfo>();
+        List<BlackNumberInfo> blackNumberInfos = new ArrayList<>();
+        while (cursor.moveToNext()) {
+            BlackNumberInfo blackNumberInfo = new BlackNumberInfo();
+            blackNumberInfo.setMode(cursor.getString(1));
+            blackNumberInfo.setNumber(cursor.getString(0));
+            blackNumberInfos.add(blackNumberInfo);
+        }
+        cursor.close();
+        db.close();
+        return blackNumberInfos;
+    }
+
+    /**
+     * 分批加载数据
+     * @param startIndex  开始的位置
+     * @param maxCount    每页展示的最大的条目
+     * @return
+     */
+    public List<BlackNumberInfo> findBatch(int startIndex, int maxCount) {
+        SQLiteDatabase db = helper.getReadableDatabase();
+        Cursor cursor = db.rawQuery("select number,mode from black_number limit ? offset ?",
+                new String[]{String.valueOf(maxCount),
+                String.valueOf(startIndex)});
+        List<BlackNumberInfo> blackNumberInfos = new ArrayList<>();
         while (cursor.moveToNext()) {
             BlackNumberInfo blackNumberInfo = new BlackNumberInfo();
             blackNumberInfo.setMode(cursor.getString(1));

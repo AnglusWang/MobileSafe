@@ -1,6 +1,7 @@
 package com.example.angluswang.mobilesafe.activity;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
@@ -8,6 +9,8 @@ import android.os.Message;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -21,7 +24,8 @@ import com.example.angluswang.mobilesafe.db.dao.BlackNumberDao;
 import com.example.angluswang.mobilesafe.entity.BlackNumberInfo;
 
 import java.util.List;
-import java.util.Random;
+
+import static com.example.angluswang.mobilesafe.R.id.et_number;
 
 /**
  * Created by Jeson on 2016/7/31.
@@ -48,13 +52,13 @@ public class CallSafeActivity extends Activity {
         initView();
         initData();
 
-        //初始化黑名单数据
-        BlackNumberDao dao = new BlackNumberDao(this);
-        Random random = new Random();
-        for (int i = 0; i < 200; i++) {
-            Long num = 13173849000L + i;
-            dao.add(num + "", String.valueOf(random.nextInt(3) + 1));
-        }
+//        //初始化黑名单数据
+//        BlackNumberDao dao = new BlackNumberDao(this);
+//        Random random = new Random();
+//        for (int i = 0; i < 200; i++) {
+//            Long num = 13173849000L + i;
+//            dao.add(num + "", String.valueOf(random.nextInt(3) + 1));
+//        }
     }
 
     private Handler handler = new Handler() {
@@ -62,18 +66,17 @@ public class CallSafeActivity extends Activity {
         public void handleMessage(Message msg) {
             adapter = new CallSafeAdapter(blackNumInfos, CallSafeActivity.this);
             lvBlackPhone.setAdapter(adapter);
+            tvPageNumber.setText(mCurrentNumber + "/" + mTotalPage);
         }
     };
 
     private void initData() {
 
-            new Thread() {
+        new Thread() {
             public void run() {
                 dao = new BlackNumberDao(CallSafeActivity.this);
-
                 // 设置页数View
                 mTotalPage = dao.getTotalNumber() / mPageSize;
-//                tvPageNumber.setText(mCurrentNumber / mTotalPage + "");
 
 //                blackNumInfos = dao.findAllNumber();
                 blackNumInfos = dao.findPage(mCurrentNumber, mPageSize);
@@ -86,7 +89,7 @@ public class CallSafeActivity extends Activity {
         lvBlackPhone = (ListView) findViewById(R.id.lv_black_number);
         // 展示加载进度条
         LinearLayout ll_pd = (LinearLayout) findViewById(R.id.ll_pd);
-        ll_pd.setVisibility(View.VISIBLE);
+        ll_pd.setVisibility(View.INVISIBLE);
 
         etPageNumber = (EditText) findViewById(R.id.et_page_number);
         tvPageNumber = (TextView) findViewById(R.id.tv_page_number);
@@ -144,6 +147,75 @@ public class CallSafeActivity extends Activity {
                         Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    /**
+     * 添加黑名单 按钮点击事件
+     *
+     * @param view
+     */
+    public void addBlackNumber(View view) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        final AlertDialog dialog = builder.create();
+
+        View dialogView = View.inflate(this, R.layout.dialog_add_black_number, null);
+
+        final EditText etNumber = (EditText) dialogView.findViewById(et_number);
+        Button btnOk = (Button) dialogView.findViewById(R.id.btn_ok);
+        Button btnCancel = (Button) dialogView.findViewById(R.id.btn_cancel);
+        final CheckBox cbPhone = (CheckBox) dialogView.findViewById(R.id.cb_phone);
+        final CheckBox cbSms = (CheckBox) dialogView.findViewById(R.id.cb_sms);
+
+        btnOk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String strNumber = etNumber.getText().toString().trim();
+                if (TextUtils.isEmpty(strNumber)) {
+                    Toast.makeText(CallSafeActivity.this, "请输入黑名单号码",
+                            Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                String mode = "";
+
+                if (cbPhone.isChecked() && cbSms.isChecked()) {
+                    mode = "1";
+                } else if (cbPhone.isChecked()) {
+                    mode = "2";
+                } else if (cbSms.isChecked()) {
+                    mode = "3";
+                } else {
+                    Toast.makeText(CallSafeActivity.this, "请勾选拦截模式",
+                            Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                BlackNumberInfo blackNumberInfo = new BlackNumberInfo();
+                blackNumberInfo.setNumber(strNumber);
+                blackNumberInfo.setMode(mode);
+                blackNumInfos.add(0, blackNumberInfo);
+                //把电话号码和拦截模式添加到数据库。
+                dao.add(strNumber, mode);
+
+                if (adapter == null) {
+                    adapter = new CallSafeAdapter(blackNumInfos, CallSafeActivity.this);
+                    lvBlackPhone.setAdapter(adapter);
+                } else {
+                    adapter.notifyDataSetChanged();
+                }
+
+                dialog.dismiss();
+            }
+        });
+
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.setView(dialogView);
+        dialog.show();
     }
 
     /**
