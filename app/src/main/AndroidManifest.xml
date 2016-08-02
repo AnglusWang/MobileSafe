@@ -20,9 +20,9 @@
     <uses-permission android:name="android.permission.READ_PROFILE"/>
     <uses-permission android:name="android.permission.READ_CONTACTS"/>
 
-    <!--手机震动-->
+    <!-- 手机震动 -->
     <uses-permission android:name="android.permission.VIBRATE"/>
-    <!--去电-->
+    <!-- 去电 -->
     <uses-permission android:name="android.permission.PROCESS_OUTGOING_CALLS"/>
 
     <application
@@ -68,6 +68,9 @@
         </activity>
         <activity android:name=".activity.CallSafeActivity">
         </activity>
+        <!--应用程序管理-->
+        <activity android:name=".activity.AppManagerActivity">
+        </activity>
 
         <receiver android:name=".receiver.BootCompleteReceiver">
             <intent-filter>
@@ -79,12 +82,12 @@
                 <action android:name="android.provider.Telephony.SMS_RECEIVED"/>
             </intent-filter>
         </receiver>
-        <!--去电归属地显示-->
-        <!--<receiver android:name=".receiver.OutCallReceiver">-->
-        <!--<intent-filter>-->
-        <!--<action android:name="android.intent.action.NEW_OUTGOING_CALL"/>-->
-        <!--</intent-filter>-->
-        <!--</receiver>-->
+        <!-- 去电归属地显示 -->
+        <!-- <receiver android:name=".receiver.OutCallReceiver"> -->
+        <!-- <intent-filter> -->
+        <!-- <action android:name="android.intent.action.NEW_OUTGOING_CALL"/> -->
+        <!-- </intent-filter> -->
+        <!-- </receiver> -->
 
         <service android:name=".service.LocationService">
         </service>
