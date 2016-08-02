@@ -3,7 +3,7 @@
               xmlns:anglus="http://schemas.android.com/apk/res-auto"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-    android:orientation="vertical">
+              android:orientation="vertical">
 
     <TextView
         style="@style/TitleStyle"
@@ -13,9 +13,9 @@
         android:id="@+id/siv_update"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        anglus:title="自动更新设置"
         anglus:desc_off="自动更新已关闭"
-        anglus:desc_on="自动更新已开启">
+        anglus:desc_on="自动更新已开启"
+        anglus:title="自动更新设置">
 
     </com.example.angluswang.mobilesafe.view.SettingItemView>
 
@@ -23,9 +23,9 @@
         android:id="@+id/siv_address"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        anglus:title="电话归属地显示设置"
         anglus:desc_off="归属地显示已关闭"
-        anglus:desc_on="归属地显示已开启">
+        anglus:desc_on="归属地显示已开启"
+        anglus:title="电话归属地显示设置">
 
     </com.example.angluswang.mobilesafe.view.SettingItemView>
 
@@ -33,9 +33,19 @@
         android:id="@+id/siv_rocket"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        anglus:title="加速小火箭设置"
         anglus:desc_off="小火箭已关闭"
-        anglus:desc_on="小火箭已开启">
+        anglus:desc_on="小火箭已开启"
+        anglus:title="加速小火箭设置">
+
+    </com.example.angluswang.mobilesafe.view.SettingItemView>
+
+    <com.example.angluswang.mobilesafe.view.SettingItemView
+        android:id="@+id/siv_black_num"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        anglus:desc_off="黑名单拦截功能已关闭"
+        anglus:desc_on="黑名单拦截功能已开启"
+        anglus:title="黑名单功能设置">
 
     </com.example.angluswang.mobilesafe.view.SettingItemView>
 

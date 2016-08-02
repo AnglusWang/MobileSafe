@@ -10,6 +10,7 @@ import android.view.View;
 
 import com.example.angluswang.mobilesafe.R;
 import com.example.angluswang.mobilesafe.service.AddressService;
+import com.example.angluswang.mobilesafe.service.CallSafeService;
 import com.example.angluswang.mobilesafe.service.RocketService;
 import com.example.angluswang.mobilesafe.utils.ServiceStatusUtils;
 import com.example.angluswang.mobilesafe.view.SettingClickView;
@@ -25,6 +26,7 @@ public class SettingActivity extends Activity {
     private SettingItemView sivUpdate;  //自动更新设置
     private SettingItemView sivAddress;  //归属地显示设置
     private SettingItemView sivRocket; // 小火箭设置
+    private SettingItemView sivBlackNum; // 黑名单设置
 
     private SettingClickView scvAddressStyle; // 归属地风格
     private SettingClickView scvAddressLocation; // 归属地位置
@@ -43,6 +45,7 @@ public class SettingActivity extends Activity {
         initRocketView();
         initAddressStyle();
         initAddressLocation();
+        initBlackView();
     }
 
     /**
@@ -66,12 +69,10 @@ public class SettingActivity extends Activity {
             @Override
             public void onClick(View v) {
                 if (sivUpdate.isChecked()) {
-
                     sivUpdate.setChecked(false);
 //                    sivUpdate.setDesc("自动更新已关闭");
                     mPref.edit().putBoolean("auto_update", false).apply();
                 } else {
-
                     sivUpdate.setChecked(true);
 //                    sivUpdate.setDesc("自动更新已开启");
                     mPref.edit().putBoolean("auto_update", true).apply();
@@ -85,6 +86,15 @@ public class SettingActivity extends Activity {
      */
     private void initAddressView() {
         sivAddress = (SettingItemView) findViewById(R.id.siv_address);
+
+        boolean running = ServiceStatusUtils.isServiceRunning(this,
+                "com.example.angluswang.mobilesafe.service.AddressService");
+        if (running) {
+            sivAddress.setChecked(true);
+        } else {
+            sivAddress.setChecked(false);
+        }
+
         sivAddress.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -100,27 +110,22 @@ public class SettingActivity extends Activity {
             }
         });
 
-        boolean running = ServiceStatusUtils.isServiceRunning(this,
-                "com.example.angluswang.mobilesafe.service.AddressService");
-        if (running) {
-            sivAddress.setChecked(true);
-        } else {
-            sivAddress.setChecked(false);
-        }
     }
 
     /**
-     * 初始化归属地显示设置开关
+     * 初始化小火箭 设置开关
      */
     private void initRocketView() {
         sivRocket = (SettingItemView) findViewById(R.id.siv_rocket);
 
-        Boolean isOpen = mPref.getBoolean("rocket_status", true);
-        if (isOpen) {
+        boolean running = ServiceStatusUtils.isServiceRunning(this,
+                "com.example.angluswang.mobilesafe.service.RocketService");
+        if (running) {
             sivRocket.setChecked(true);
         } else {
             sivRocket.setChecked(false);
         }
+
         sivRocket.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -128,12 +133,42 @@ public class SettingActivity extends Activity {
                     sivRocket.setChecked(false);
                     stopService(new Intent(SettingActivity.this,
                             RocketService.class)); //开启小火箭
-                    mPref.edit().putBoolean("rocket_status", false).apply();
                 } else {
                     sivRocket.setChecked(true);
                     startService(new Intent(SettingActivity.this,
                             RocketService.class)); //关闭小火箭
-                    mPref.edit().putBoolean("rocket_status", true).apply();
+                }
+            }
+        });
+    }
+
+    /**
+     * 初始化黑名单
+     */
+    private void initBlackView() {
+        sivBlackNum = (SettingItemView) findViewById(R.id.siv_black_num);
+
+        // 判断拦截服务是否运行
+        boolean serviceRunning = ServiceStatusUtils.isServiceRunning(this,
+                "com.example.angluswang.mobilesafe.service.CallSafeService");
+        if (serviceRunning) {
+            sivBlackNum.setChecked(true);
+        } else {
+            sivBlackNum.setChecked(false);
+        }
+
+        sivBlackNum.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                if (sivBlackNum.isChecked()) {
+                    sivBlackNum.setChecked(false);
+                    stopService(new Intent(SettingActivity.this,
+                            CallSafeService.class));// 停止拦截服务
+                } else {
+                    sivBlackNum.setChecked(true);
+                    startService(new Intent(SettingActivity.this,
+                            CallSafeService.class));// 开启拦截服务
                 }
             }
         });

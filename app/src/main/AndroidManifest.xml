@@ -92,6 +92,8 @@
         </service>
         <service android:name=".service.RocketService">
         </service>
+        <service android:name=".service.CallSafeService">
+        </service>
 
     </application>
 
