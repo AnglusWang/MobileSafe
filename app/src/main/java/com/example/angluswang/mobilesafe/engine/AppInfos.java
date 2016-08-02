@@ -5,7 +5,6 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
-import android.util.Log;
 
 import com.example.angluswang.mobilesafe.entity.AppInfo;
 
@@ -58,10 +57,10 @@ public class AppInfos {
 
             appInfo.setApkSize(apkSize);
 
-            Log.i("appInfo:", "---------------------------");
-            Log.i("appInfo:", "程序的名字:" + apkName);
-            Log.i("appInfo:", "程序的包名:" + packageName);
-            Log.i("appInfo:", "程序的大小:" + apkSize);
+//            Log.i("appInfo:", "---------------------------");
+//            Log.i("appInfo:", "程序的名字:" + apkName);
+//            Log.i("appInfo:", "程序的包名:" + packageName);
+//            Log.i("appInfo:", "程序的大小:" + apkSize);
 
 
 //          判断应用是系统应用 还是 用户应用

@@ -1,6 +1,7 @@
 package com.example.angluswang.mobilesafe.activity;
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -10,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -20,6 +22,7 @@ import com.lidroid.xutils.ViewUtils;
 import com.lidroid.xutils.view.annotation.ContentView;
 import com.lidroid.xutils.view.annotation.ViewInject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @ContentView(R.layout.activity_app_manager)
@@ -33,6 +36,8 @@ public class AppManagerActivity extends Activity {
     private TextView tvSd;
 
     private List<AppInfo> appInfos;
+    private ArrayList<AppInfo> userAppInfos; //用户程序
+    private ArrayList<AppInfo> systemAppInfos; //系统程序
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,12 +51,29 @@ public class AppManagerActivity extends Activity {
 
         @Override
         public int getCount() {
-            return appInfos.size();
+            return userAppInfos.size() + 1 + systemAppInfos.size() + 1;
         }
 
         @Override
         public Object getItem(int position) {
-            return appInfos.get(position);
+            if (position == 0) {
+                return null;
+            } else if (position == userAppInfos.size() + 1) {
+                return null;
+            }
+
+            AppInfo appInfo;
+            if (position < userAppInfos.size() + 1) {
+                //把多出来的特殊的条目减掉
+                appInfo = userAppInfos.get(position - 1);
+
+            } else {
+
+                int location = userAppInfos.size() + 2;
+                appInfo = systemAppInfos.get(position - location);
+            }
+
+            return appInfo;
         }
 
         @Override
@@ -62,34 +84,64 @@ public class AppManagerActivity extends Activity {
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
 
-            ViewHolder holder;
-            if (convertView == null) {
+            if (position == 0) { //如果当前的position等于0 表示应用程序
 
-                holder = new ViewHolder();
-                convertView = View.inflate(AppManagerActivity.this, R.layout.item_app_manager, null);
-                holder.imgIcon = (ImageView) convertView.findViewById(R.id.img_icon);
-                holder.tvName = (TextView) convertView.findViewById(R.id.tv_name);
-                holder.tvLocation = (TextView) convertView.findViewById(R.id.tv_location);
-                holder.tvApkSize = (TextView) convertView.findViewById(R.id.tv_apk_size);
+                TextView textView = new TextView(AppManagerActivity.this);
+                textView.setTextColor(Color.WHITE);
+                textView.setBackgroundColor(Color.GRAY);
+                textView.setText("用户程序(" + userAppInfos.size() + ")");
 
-                convertView.setTag(holder);
-            } else {
-                holder = (ViewHolder) convertView.getTag();
+                return textView;
+
+            } else if (position == userAppInfos.size() + 1) { //表示系统程序
+
+                TextView textView = new TextView(AppManagerActivity.this);
+                textView.setTextColor(Color.WHITE);
+                textView.setBackgroundColor(Color.GRAY);
+                textView.setText("系统程序(" + systemAppInfos.size() + ")");
+
+                return textView;
+
             }
 
-            AppInfo info = appInfos.get(position);
-            holder.imgIcon.setBackground(info.getIcon());
-            holder.tvName.setText(info.getApkName());
+            View view;
+            ViewHolder holder;
+            if (convertView != null && convertView instanceof LinearLayout) {
+                view = convertView;
+                holder = (ViewHolder) view.getTag();
+            } else {
+                holder = new ViewHolder();
+                view = View.inflate(AppManagerActivity.this, R.layout.item_app_manager, null);
+                holder.imgIcon = (ImageView) view.findViewById(R.id.img_icon);
+                holder.tvName = (TextView) view.findViewById(R.id.tv_name);
+                holder.tvLocation = (TextView) view.findViewById(R.id.tv_location);
+                holder.tvApkSize = (TextView) view.findViewById(R.id.tv_apk_size);
 
-            if (info.isRom()) {
+                view.setTag(holder);
+            }
+
+            // 特殊条目处理
+            AppInfo appInfo;
+            if (position < userAppInfos.size() + 1) {
+                //把多出来的特殊的条目减掉
+                appInfo = userAppInfos.get(position - 1);
+            } else {
+                int location = userAppInfos.size() + 2;
+                appInfo = systemAppInfos.get(position - location);
+            }
+
+            holder.imgIcon.setBackground(appInfo.getIcon());
+            holder.tvName.setText(appInfo.getApkName());
+
+            if (appInfo.isRom()) {
                 holder.tvLocation.setText("手机内存");
             } else {
-                holder.tvLocation.setText("存储卡");
+                holder.tvLocation.setText("外部存储");
             }
             holder.tvApkSize.setText(
-                    Formatter.formatFileSize(AppManagerActivity.this, info.getApkSize()));
+                    Formatter.formatFileSize(AppManagerActivity.this, appInfo.getApkSize()));
 
-            return convertView;
+            return view;
         }
     }
 
@@ -115,6 +167,23 @@ public class AppManagerActivity extends Activity {
             public void run() {
                 // 获取所有安装到手机上的应用程序
                 appInfos = AppInfos.getAppInfos(AppManagerActivity.this);
+
+                //appInfos拆成 用户程序的集合 + 系统程序的集合
+
+                //用户程序的集合
+                userAppInfos = new ArrayList<>();
+                //系统程序的集合
+                systemAppInfos = new ArrayList<>();
+
+                for (AppInfo appInfo : appInfos) {
+                    //用户程序
+                    if (appInfo.isUserApp()) {
+                        userAppInfos.add(appInfo);
+                    } else {
+                        systemAppInfos.add(appInfo);
+                    }
+                }
+
                 handler.sendEmptyMessage(0);
             }
         }.start();
