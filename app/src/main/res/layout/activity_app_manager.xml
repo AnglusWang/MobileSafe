@@ -46,8 +46,7 @@
             android:layout_height="wrap_content"
             android:background="#ff888888"
             android:text="用户程序(5)个"
-            android:textColor="#fff"
-            android:visibility="invisible"/>
+            android:textColor="#fff"/>
     </FrameLayout>
 
 </LinearLayout>

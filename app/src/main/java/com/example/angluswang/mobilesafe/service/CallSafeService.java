@@ -18,6 +18,7 @@ import com.example.angluswang.mobilesafe.db.dao.BlackNumberDao;
 public class CallSafeService extends Service {
 
     private BlackNumberDao dao;
+    private InnerReceiver innerReceiver;
 
     public CallSafeService() {
     }
@@ -33,7 +34,7 @@ public class CallSafeService extends Service {
 
         dao = new BlackNumberDao(this);
         //初始化短信的广播
-        InnerReceiver innerReceiver = new InnerReceiver();
+        innerReceiver = new InnerReceiver();
         IntentFilter intentFilter = new IntentFilter("android.provider.Telephony.SMS_RECEIVED");
         intentFilter.setPriority(Integer.MAX_VALUE);
         registerReceiver(innerReceiver, intentFilter);
@@ -77,6 +78,7 @@ public class CallSafeService extends Service {
 
     @Override
     public void onDestroy() {
+        unregisterReceiver(innerReceiver);
         super.onDestroy();
     }
 }

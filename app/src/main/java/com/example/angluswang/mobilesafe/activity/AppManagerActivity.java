@@ -9,6 +9,7 @@ import android.os.Message;
 import android.text.format.Formatter;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -34,6 +35,8 @@ public class AppManagerActivity extends Activity {
     private TextView tvRom;
     @ViewInject(R.id.tv_sd)
     private TextView tvSd;
+    @ViewInject(R.id.tv_app)
+    private TextView tvApp;
 
     private List<AppInfo> appInfos;
     private ArrayList<AppInfo> userAppInfos; //用户程序
@@ -68,7 +71,6 @@ public class AppManagerActivity extends Activity {
                 appInfo = userAppInfos.get(position - 1);
 
             } else {
-
                 int location = userAppInfos.size() + 2;
                 appInfo = systemAppInfos.get(position - location);
             }
@@ -198,7 +200,27 @@ public class AppManagerActivity extends Activity {
         long sdFreeSpace = Environment.getExternalStorageDirectory().getFreeSpace();
 
         // 格式化大小，并设置文本内容
-        tvRom.setText(Formatter.formatFileSize(this, RomFreeSpace));
-        tvSd.setText(Formatter.formatFileSize(this, sdFreeSpace));
+        tvRom.setText("内存卡可用：" + Formatter.formatFileSize(this, RomFreeSpace));
+        tvSd.setText("SD卡可用：" + Formatter.formatFileSize(this, sdFreeSpace));
+
+        // 应用App ListView 滑动监听
+        lvApp.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem,
+                                 int visibleItemCount, int totalItemCount) {
+                if (userAppInfos != null && systemAppInfos != null) {
+                    if (firstVisibleItem > (userAppInfos.size() + 1)) {
+                        tvApp.setText("系统程序(" + systemAppInfos.size() + ")");
+                    } else {
+                        tvApp.setText("用户程序(" + userAppInfos.size() + ")");
+                    }
+                }
+            }
+        });
     }
 }
