@@ -7,13 +7,16 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.text.format.Formatter;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.example.angluswang.mobilesafe.R;
@@ -41,6 +44,7 @@ public class AppManagerActivity extends Activity {
     private List<AppInfo> appInfos;
     private ArrayList<AppInfo> userAppInfos; //用户程序
     private ArrayList<AppInfo> systemAppInfos; //系统程序
+    private PopupWindow pw;     // 弹出窗口(卸载、运行、分享)
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -222,5 +226,36 @@ public class AppManagerActivity extends Activity {
                 }
             }
         });
+
+        // 为ListView 设置点击侦听
+        lvApp.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                // 获取当前点击的 Item 对象
+                Object obj = lvApp.getItemAtPosition(position);
+                if (obj != null && obj instanceof AppInfo) { // 判断当前对象不为空，且为AppInfo 对象
+                    View contentView = View.inflate(AppManagerActivity.this,
+                            R.layout.item_popup_app, null);
+
+                    // Window 上只有一个 popupWindow 给用户
+                    popupWindowDismis();
+
+                    pw = new PopupWindow(contentView, -2, -2); // -2 表示包裹内容
+
+                    int[] location = new int[2];
+                    view.getLocationInWindow(location); // location 0，1 表示 x,y 坐标
+
+                    pw.showAtLocation(parent, Gravity.START + Gravity.TOP, 60, location[1]);
+
+                }
+            }
+        });
+    }
+
+    private void popupWindowDismis() {
+        if (pw != null && pw.isShowing()) {
+            pw.dismiss();
+            pw = null;
+        }
     }
 }
