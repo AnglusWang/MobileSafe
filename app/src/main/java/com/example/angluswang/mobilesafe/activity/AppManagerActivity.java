@@ -2,6 +2,7 @@ package com.example.angluswang.mobilesafe.activity;
 
 import android.app.Activity;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -10,6 +11,8 @@ import android.text.format.Formatter;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.ScaleAnimation;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
@@ -217,6 +220,8 @@ public class AppManagerActivity extends Activity {
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem,
                                  int visibleItemCount, int totalItemCount) {
+                popupWindowDismis();
+
                 if (userAppInfos != null && systemAppInfos != null) {
                     if (firstVisibleItem > (userAppInfos.size() + 1)) {
                         tvApp.setText("系统程序(" + systemAppInfos.size() + ")");
@@ -241,12 +246,20 @@ public class AppManagerActivity extends Activity {
                     popupWindowDismis();
 
                     pw = new PopupWindow(contentView, -2, -2); // -2 表示包裹内容
+                    //需要注意：使用PopupWindow 必须设置背景。不然没有动画
+                    pw.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT)); // 透明背景
 
                     int[] location = new int[2];
                     view.getLocationInWindow(location); // location 0，1 表示 x,y 坐标
 
                     pw.showAtLocation(parent, Gravity.START + Gravity.TOP, 60, location[1]);
 
+                    // 为 popupWindow 添加动画效果
+                    ScaleAnimation scaleAnim = new ScaleAnimation(0.5f, 1.0f, 0.5f, 1.0f,
+                            Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+
+                    scaleAnim.setDuration(200);
+                    contentView.startAnimation(scaleAnim);
                 }
             }
         });
@@ -257,5 +270,12 @@ public class AppManagerActivity extends Activity {
             pw.dismiss();
             pw = null;
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        popupWindowDismis();
+
+        super.onDestroy();
     }
 }
