@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -10,17 +11,15 @@
         android:text="高级工具" />
 
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/button"
-        android:clickable="true"
-        android:drawableLeft="@android:drawable/ic_menu_camera"
-        android:drawablePadding="5dp"
-        android:gravity="center_vertical"
+        style="@style/AToolsItemStyle"
         android:onClick="numberAddressQuery"
-        android:padding="10dp"
-        android:text="电话归属地查询"
-        android:textColor="@color/black"
-        android:textSize="20sp" />
+        android:drawableLeft="@android:drawable/ic_menu_camera"
+        android:text="电话归属地查询"/>
+
+    <TextView
+        style="@style/AToolsItemStyle"
+        android:onClick="messagingQuery"
+        android:drawableLeft="@android:drawable/ic_menu_search"
+        android:text="短信备份"/>
 
 </LinearLayout>

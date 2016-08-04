@@ -49,4 +49,19 @@
         <item name="android:text">上一步</item>
     </style>
 
+    <!-- 高级工具条目 -->
+    <style name="AToolsItemStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@drawable/button</item>
+        <item name="android:clickable">true</item>
+        <item name="android:drawableLeft">@mipmap/ic_launcher</item>
+        <item name="android:drawablePadding">5dp</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:padding">10dp</item>
+        <item name="android:text">请自行修改</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">20sp</item>
+    </style>
+
 </resources>
