@@ -5,6 +5,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.ContentObserver;
+import android.net.Uri;
+import android.os.Handler;
 import android.os.IBinder;
 import android.telephony.PhoneStateListener;
 import android.telephony.SmsMessage;
@@ -63,14 +66,21 @@ public class CallSafeService extends Service {
              */
             switch (state) {
                 case TelephonyManager.CALL_STATE_RINGING:  //电话铃响的状态
+                    /**
+                     * 黑名单拦截模式
+                     * 1 全部拦截 电话拦截 + 短信拦截
+                     * 2 电话拦截
+                     * 3 短信拦截
+                     */
                     String mode = dao.findNumber(incomingNumber);
                     if (mode.equals("1") || mode.equals("2")) {
-                        /**
-                         * 黑名单拦截模式
-                         * 1 全部拦截 电话拦截 + 短信拦截
-                         * 2 电话拦截
-                         * 3 短信拦截
-                         */
+
+                        Uri uri = Uri.parse("content://call_log/calls");
+                        getContentResolver().
+                                registerContentObserver(uri, true,
+                                        new MyContentObserver(new Handler(), incomingNumber));
+
+                        // 挂断电话
                         endCall();
                     }
                     break;
@@ -78,6 +88,39 @@ public class CallSafeService extends Service {
                     break;
             }
         }
+    }
+
+    private class MyContentObserver extends ContentObserver {
+
+        String incomingNumber; // 来电号码
+
+        /**
+         * Creates a content observer.
+         *
+         * @param handler The handler to run {@link #onChange} on, or null if none.
+         */
+        public MyContentObserver(Handler handler, String incomingNumber) {
+            super(handler);
+            this.incomingNumber = incomingNumber;
+        }
+
+        // 当数据改变时调用的方法
+        @Override
+        public void onChange(boolean selfChange) {
+            getContentResolver().unregisterContentObserver(this);
+            deleteCallLog(incomingNumber); // 删除电话记录
+
+            super.onChange(selfChange);
+        }
+    }
+
+    /**
+     * 删除电话记录
+     */
+    private void deleteCallLog(String incommingNumber) {
+
+        Uri uri = Uri.parse("content://call_log/calls");
+        getContentResolver().delete(uri, "number=?", new String[]{incommingNumber});
     }
 
     /**

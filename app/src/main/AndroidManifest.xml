@@ -24,6 +24,10 @@
     <uses-permission android:name="android.permission.VIBRATE"/>
     <!-- 去电 -->
     <uses-permission android:name="android.permission.PROCESS_OUTGOING_CALLS"/>
+    <uses-permission android:name="android.permission.CALL_PHONE"/>
+    <!-- 电话记录 -->
+    <uses-permission android:name="android.permission.READ_CALL_LOG"/>
+    <uses-permission android:name="android.permission.WRITE_CALL_LOG"/>
 
     <application
         android:allowBackup="true"
