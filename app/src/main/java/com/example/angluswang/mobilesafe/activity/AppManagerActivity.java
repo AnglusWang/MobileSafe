@@ -71,42 +71,54 @@ public class AppManagerActivity extends Activity
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.tv_popup_uninstall:
-//                Log.i("tv_popup_uninstall:", "被点击了");
-                Intent uninstallIntent = new Intent("android.intent.action.DELETE",
-                        Uri.parse("package:" + clickAppInfo.getApkPackageName()));
-                startActivity(uninstallIntent);
-                popupWindowDismis();
+                unInstallApp();
                 break;
             case R.id.tv_popup_run:
-//                Log.i("tv_popup_run:", "被点击了");
-                Intent runIntent = getPackageManager().
-                        getLaunchIntentForPackage(clickAppInfo.getApkPackageName());
-                startActivity(runIntent);
-                popupWindowDismis();
+                runApp();
                 break;
             case R.id.tv_popup_share:
-//                Log.i("tv_popup_share:", "被点击了");
-                Intent shareIntent = new Intent("android.intent.action.SEND");
-                shareIntent.setType("text/plain");
-                shareIntent.putExtra("android.intent.extra.SUBJECT", "f分享");
-                shareIntent.putExtra("android.intent.extra.TEXT",
-                        "Hi！推荐您使用软件：" + clickAppInfo.getApkName() +
-                                "下载地址:" + "https://play.google.com/store/apps/details?id=" +
-                                clickAppInfo.getApkPackageName());
-                startActivity(Intent.createChooser(shareIntent, "分享"));
-                popupWindowDismis();
+                shareApp();
                 break;
             case R.id.tv_popup_detail:
-//                Log.i("tv_popup_detail:", "被点击了");
-                Intent detailIntent = new Intent();
-                detailIntent.setAction("android.settings.APPLICATION_DETAILS_SETTINGS");
-                detailIntent.addCategory(Intent.CATEGORY_DEFAULT);
-                detailIntent.setData(Uri.parse("package:" + clickAppInfo.getApkPackageName()));
-                startActivity(detailIntent);
+                getAppDetail();
                 break;
             default:
                 break;
         }
+    }
+
+    private void getAppDetail() {
+        Intent detailIntent = new Intent();
+        detailIntent.setAction("android.settings.APPLICATION_DETAILS_SETTINGS");
+        detailIntent.addCategory(Intent.CATEGORY_DEFAULT);
+        detailIntent.setData(Uri.parse("package:" + clickAppInfo.getApkPackageName()));
+        startActivity(detailIntent);
+    }
+
+    private void shareApp() {
+        Intent shareIntent = new Intent("android.intent.action.SEND");
+        shareIntent.setType("text/plain");
+        shareIntent.putExtra("android.intent.extra.SUBJECT", "f分享");
+        shareIntent.putExtra("android.intent.extra.TEXT",
+                "Hi！推荐您使用软件：" + clickAppInfo.getApkName() +
+                        "下载地址:" + "https://play.google.com/store/apps/details?id=" +
+                        clickAppInfo.getApkPackageName());
+        startActivity(Intent.createChooser(shareIntent, "分享"));
+        popupWindowDismis();
+    }
+
+    private void runApp() {
+        Intent runIntent = getPackageManager().
+                getLaunchIntentForPackage(clickAppInfo.getApkPackageName());
+        startActivity(runIntent);
+        popupWindowDismis();
+    }
+
+    private void unInstallApp() {
+        Intent uninstallIntent = new Intent("android.intent.action.DELETE",
+                Uri.parse("package:" + clickAppInfo.getApkPackageName()));
+        startActivity(uninstallIntent);
+        popupWindowDismis();
     }
 
     private class AppManagerAdapter extends BaseAdapter {
