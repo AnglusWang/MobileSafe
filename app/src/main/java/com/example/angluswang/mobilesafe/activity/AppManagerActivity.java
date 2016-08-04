@@ -1,8 +1,10 @@
 package com.example.angluswang.mobilesafe.activity;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -33,7 +35,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 @ContentView(R.layout.activity_app_manager)
-public class AppManagerActivity extends Activity {
+public class AppManagerActivity extends Activity
+        implements View.OnClickListener {
 
     @ViewInject(R.id.lv_app_manager)
     private ListView lvApp;
@@ -44,10 +47,17 @@ public class AppManagerActivity extends Activity {
     @ViewInject(R.id.tv_app)
     private TextView tvApp;
 
+    private TextView tvUninstall;
+    private TextView tvRun;
+    private TextView tvShare;
+    private TextView tvDetail;
+
     private List<AppInfo> appInfos;
     private ArrayList<AppInfo> userAppInfos; //用户程序
     private ArrayList<AppInfo> systemAppInfos; //系统程序
     private PopupWindow pw;     // 弹出窗口(卸载、运行、分享)
+
+    private AppInfo clickAppInfo; // 被点击的应用信息
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +65,48 @@ public class AppManagerActivity extends Activity {
 
         initView();
         initData();
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.tv_popup_uninstall:
+//                Log.i("tv_popup_uninstall:", "被点击了");
+                Intent uninstallIntent = new Intent("android.intent.action.DELETE",
+                        Uri.parse("package:" + clickAppInfo.getApkPackageName()));
+                startActivity(uninstallIntent);
+                popupWindowDismis();
+                break;
+            case R.id.tv_popup_run:
+//                Log.i("tv_popup_run:", "被点击了");
+                Intent runIntent = getPackageManager().
+                        getLaunchIntentForPackage(clickAppInfo.getApkPackageName());
+                startActivity(runIntent);
+                popupWindowDismis();
+                break;
+            case R.id.tv_popup_share:
+//                Log.i("tv_popup_share:", "被点击了");
+                Intent shareIntent = new Intent("android.intent.action.SEND");
+                shareIntent.setType("text/plain");
+                shareIntent.putExtra("android.intent.extra.SUBJECT", "f分享");
+                shareIntent.putExtra("android.intent.extra.TEXT",
+                        "Hi！推荐您使用软件：" + clickAppInfo.getApkName() +
+                                "下载地址:" + "https://play.google.com/store/apps/details?id=" +
+                                clickAppInfo.getApkPackageName());
+                startActivity(Intent.createChooser(shareIntent, "分享"));
+                popupWindowDismis();
+                break;
+            case R.id.tv_popup_detail:
+//                Log.i("tv_popup_detail:", "被点击了");
+                Intent detailIntent = new Intent();
+                detailIntent.setAction("android.settings.APPLICATION_DETAILS_SETTINGS");
+                detailIntent.addCategory(Intent.CATEGORY_DEFAULT);
+                detailIntent.setData(Uri.parse("package:" + clickAppInfo.getApkPackageName()));
+                startActivity(detailIntent);
+                break;
+            default:
+                break;
+        }
     }
 
     private class AppManagerAdapter extends BaseAdapter {
@@ -241,6 +293,18 @@ public class AppManagerActivity extends Activity {
                 if (obj != null && obj instanceof AppInfo) { // 判断当前对象不为空，且为AppInfo 对象
                     View contentView = View.inflate(AppManagerActivity.this,
                             R.layout.item_popup_app, null);
+
+                    clickAppInfo = (AppInfo) obj;
+                    // 为运行、卸载、分析、详细 设置 点击侦听
+                    tvUninstall = (TextView) contentView.findViewById(R.id.tv_popup_uninstall);
+                    tvRun = (TextView) contentView.findViewById(R.id.tv_popup_run);
+                    tvShare = (TextView) contentView.findViewById(R.id.tv_popup_share);
+                    tvDetail = (TextView) contentView.findViewById(R.id.tv_popup_detail);
+
+                    tvUninstall.setOnClickListener(AppManagerActivity.this);
+                    tvRun.setOnClickListener(AppManagerActivity.this);
+                    tvShare.setOnClickListener(AppManagerActivity.this);
+                    tvDetail.setOnClickListener(AppManagerActivity.this);
 
                     // Window 上只有一个 popupWindow 给用户
                     popupWindowDismis();
