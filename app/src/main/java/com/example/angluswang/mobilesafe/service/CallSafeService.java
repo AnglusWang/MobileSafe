@@ -6,10 +6,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.IBinder;
+import android.telephony.PhoneStateListener;
 import android.telephony.SmsMessage;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 
+import com.android.internal.telephony.ITelephony;
 import com.example.angluswang.mobilesafe.db.dao.BlackNumberDao;
+
+import java.lang.reflect.Method;
 
 /**
  * Created by Jeson on 2016/8/2.
@@ -33,11 +38,64 @@ public class CallSafeService extends Service {
         super.onCreate();
 
         dao = new BlackNumberDao(this);
+
+        // 获得系统的电话服务
+        TelephonyManager tm = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
+        MyPhoneStateListener listener = new MyPhoneStateListener();
+        tm.listen(listener, PhoneStateListener.LISTEN_CALL_STATE);
+
         //初始化短信的广播
         innerReceiver = new InnerReceiver();
         IntentFilter intentFilter = new IntentFilter("android.provider.Telephony.SMS_RECEIVED");
         intentFilter.setPriority(Integer.MAX_VALUE);
         registerReceiver(innerReceiver, intentFilter);
+    }
+
+
+    private class MyPhoneStateListener extends PhoneStateListener {
+        @Override
+        public void onCallStateChanged(int state, String incomingNumber) {
+            super.onCallStateChanged(state, incomingNumber);
+            /**
+             * @see TelephonyManager#CALL_STATE_IDLE 呼叫状态闲置
+             * @see TelephonyManager#CALL_STATE_RINGING 电话响铃状态
+             * @see TelephonyManager#CALL_STATE_OFFHOOK 电话接通状态
+             */
+            switch (state) {
+                case TelephonyManager.CALL_STATE_RINGING:  //电话铃响的状态
+                    String mode = dao.findNumber(incomingNumber);
+                    if (mode.equals("1") || mode.equals("2")) {
+                        /**
+                         * 黑名单拦截模式
+                         * 1 全部拦截 电话拦截 + 短信拦截
+                         * 2 电话拦截
+                         * 3 短信拦截
+                         */
+                        endCall();
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    /**
+     * 挂断电话
+     */
+    private void endCall() {
+        try {
+            //通过类加载器加载ServiceManager
+            Class<?> clazz = getClassLoader().loadClass("android.os.ServiceManager");
+            //通过反射得到当前的方法
+            Method method = clazz.getDeclaredMethod("getService", String.class);
+            IBinder iBinder = (IBinder) method.invoke(null, TELEPHONY_SERVICE);
+            ITelephony iTelephony = ITelephony.Stub.asInterface(iBinder);
+            iTelephony.endCall();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     private class InnerReceiver extends BroadcastReceiver {
