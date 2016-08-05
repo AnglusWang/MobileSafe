@@ -100,7 +100,8 @@ public class SmsUtils {
                     serializer.endTag(null, "type");
 
                     serializer.startTag(null, "body");
-                    serializer.text(cursor.getString(3));
+                    // 第一个参数为 密钥
+                    serializer.text(Crypto.encrypt("789", cursor.getString(3)));
                     serializer.endTag(null, "body");
 
                     process++; // 序列化完成一条短信后，自加 1
@@ -118,7 +119,7 @@ public class SmsUtils {
                 cursor.close();
 
                 return true;
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
 
