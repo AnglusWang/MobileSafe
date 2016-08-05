@@ -8,7 +8,6 @@ import android.os.Environment;
 import android.os.SystemClock;
 import android.util.Log;
 import android.util.Xml;
-import android.widget.ProgressBar;
 
 import org.xmlpull.v1.XmlSerializer;
 
@@ -24,6 +23,17 @@ import java.io.IOException;
 public class SmsUtils {
 
     /**
+     * 短信备份接口
+     */
+    public interface BackUpSmsCallBack {
+
+        public void before(int count);
+
+        public void onBackUpSms(int process);
+
+    }
+
+    /**
      * 目的 ： 备份短信
      * <p>
      * 1 判断当前用户的手机上面是否有sd卡
@@ -31,7 +41,7 @@ public class SmsUtils {
      * 使用内容观察者
      * 3 写短信(写到sd卡)
      */
-    public static boolean backUp(Context context, ProgressBar pd) {
+    public static boolean backUp(Context context, BackUpSmsCallBack callBack) {
 
         // 判断 SD 卡状态
         if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
@@ -45,7 +55,7 @@ public class SmsUtils {
 
             int count = cursor.getCount();// 获取总的短信数
             // 设置短息备份进度框的一些属性
-            pd.setMax(count);
+            callBack.before(count);
             // 进度条默认为 0
             int process = 0;
 
@@ -93,8 +103,8 @@ public class SmsUtils {
                     serializer.text(cursor.getString(3));
                     serializer.endTag(null, "body");
 
-                    process ++; // 序列化完成一条短信后，自加 1
-                    pd.setProgress(process);
+                    process++; // 序列化完成一条短信后，自加 1
+                    callBack.onBackUpSms(process);
 
                     SystemClock.sleep(200); // 减慢备份数据，便于观察进度框
                 }
