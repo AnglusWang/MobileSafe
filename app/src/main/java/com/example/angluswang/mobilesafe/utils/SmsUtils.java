@@ -1,6 +1,5 @@
 package com.example.angluswang.mobilesafe.utils;
 
-import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
@@ -9,6 +8,7 @@ import android.os.Environment;
 import android.os.SystemClock;
 import android.util.Log;
 import android.util.Xml;
+import android.widget.ProgressBar;
 
 import org.xmlpull.v1.XmlSerializer;
 
@@ -31,7 +31,7 @@ public class SmsUtils {
      * 使用内容观察者
      * 3 写短信(写到sd卡)
      */
-    public static boolean backUp(Context context, ProgressDialog pd) {
+    public static boolean backUp(Context context, ProgressBar pd) {
 
         // 判断 SD 卡状态
         if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {

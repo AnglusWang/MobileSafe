@@ -5,22 +5,30 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ProgressBar;
 
 import com.example.angluswang.mobilesafe.R;
 import com.example.angluswang.mobilesafe.utils.SmsUtils;
 import com.example.angluswang.mobilesafe.utils.UIUtils;
+import com.lidroid.xutils.ViewUtils;
+import com.lidroid.xutils.view.annotation.ContentView;
+import com.lidroid.xutils.view.annotation.ViewInject;
 
 /**
  * 高级工具
  */
+@ContentView(R.layout.activity_atools)
 public class AToolsActivity extends Activity {
 
     private ProgressDialog pd; // 短信备份进度框
 
+    @ViewInject(R.id.pb_msg_backup)
+    private ProgressBar pbMsgBackup;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_atools);
+        ViewUtils.inject(this);
     }
 
     /**
@@ -40,15 +48,15 @@ public class AToolsActivity extends Activity {
     public void messagingBackup(View view) {
 
         // 初始化一个进度条的对话框
-        pd = new ProgressDialog(this);
-        pd.setTitle("提示");
-        pd.setMessage("正在执行操作，请等待。。。");
-        pd.show();
+//        pd = new ProgressDialog(this);
+//        pd.setTitle("提示");
+//        pd.setMessage("正在执行操作，请等待。。。");
+//        pd.show();
 
         new Thread() {
             @Override
             public void run() {
-                boolean result = SmsUtils.backUp(AToolsActivity.this, pd);
+                boolean result = SmsUtils.backUp(AToolsActivity.this, pbMsgBackup);
                 if (result) {
 //                    Looper.prepare(); // 取消息
 //                    Toast.makeText(AToolsActivity.this, "短信备份成功",
@@ -58,7 +66,7 @@ public class AToolsActivity extends Activity {
                 } else {
                     UIUtils.showToast(AToolsActivity.this, "短信备份失败");
                 }
-                pd.dismiss();
+//                pd.dismiss();
             }
         };
     }
