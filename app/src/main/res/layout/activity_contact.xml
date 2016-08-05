@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.example.angluswang.mobilesafe.activity.ContactActivity">
+    tools:context=".activity.ContactActivity">
 
     <TextView
         style="@style/TitleStyle"
