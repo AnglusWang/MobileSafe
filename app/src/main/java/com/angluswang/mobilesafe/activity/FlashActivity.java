@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -19,9 +20,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.angluswang.mobilesafe.utils.StreamUtils;
 import com.angluswang.mobilesafe.R;
 import com.angluswang.mobilesafe.entity.VersionInfo;
+import com.angluswang.mobilesafe.utils.StreamUtils;
 import com.google.gson.Gson;
 import com.lidroid.xutils.HttpUtils;
 import com.lidroid.xutils.exception.HttpException;
@@ -89,7 +90,9 @@ public class FlashActivity extends Activity {
 
         mPref = getSharedPreferences("config", MODE_PRIVATE);
 
-        copyDB("address.db");// 拷贝归属地查询数据库
+        copyDB("address.db"); // 拷贝归属地查询数据库
+
+        CreateShortCut(); // 创建桌面快捷方式
 
         Boolean autoUpdate = mPref.getBoolean("auto_update", true);
         if (autoUpdate) {
@@ -102,6 +105,28 @@ public class FlashActivity extends Activity {
         AlphaAnimation anim = new AlphaAnimation(0.3f, 1.0f);
         anim.setDuration(2000);
         rfRoot.startAnimation(anim);
+    }
+
+    /**
+     * 创建桌面快捷方式
+     */
+    private void CreateShortCut() {
+        Intent intent = new Intent();
+        intent.setAction("com.android.launcher.action.INSTALL_SHORTCUT");
+        //如果设置为true表示可以创建重复的快捷方式
+        intent.putExtra("duplicate", false);
+        // 设置快捷方式 图标与名称
+        intent.putExtra(Intent.EXTRA_SHORTCUT_ICON,
+                BitmapFactory.decodeResource(getResources(), R.drawable.app_icon));
+        intent.putExtra(Intent.EXTRA_SHORTCUT_NAME, "手机卫士");
+
+        // 快捷方式功能
+        // 不能用显示意图，此处使用隐式意图，进入应用程序主页
+        Intent shortcutIntent = new Intent();
+        shortcutIntent.setAction("com.angluswang.flash.INSTALL_SHORTCUT");
+        shortcutIntent.addCategory("android.intent.category.DEFAULT");
+
+        intent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent);
     }
 
     /**
