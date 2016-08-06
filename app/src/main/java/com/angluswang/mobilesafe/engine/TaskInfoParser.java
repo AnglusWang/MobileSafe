@@ -2,6 +2,7 @@ package com.angluswang.mobilesafe.engine;
 
 import android.app.ActivityManager;
 import android.content.Context;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
@@ -41,9 +42,12 @@ public class TaskInfoParser {
             taskInfo.setPackageName(processName);
 
             try {
-
                 Debug.MemoryInfo[] memoryInfo =
-                        activityManager.getProcessMemoryInfo(new int[1]);
+                        activityManager.getProcessMemoryInfo(new int[]{runningAppProcessInfo.pid});
+                // 设置占用内存大小
+                int totalPrivateDirty = memoryInfo[0].getTotalPrivateDirty() * 1024;
+                taskInfo.setMemorySize(totalPrivateDirty);
+
                 PackageInfo packageInfo = packageManager.getPackageInfo(processName, 0);
 
                 // /获取到图片
@@ -54,6 +58,14 @@ public class TaskInfoParser {
                 String appName =
                         packageInfo.applicationInfo.loadLabel(packageManager).toString();
                 taskInfo.setAppName(appName);
+
+                int flags = packageInfo.applicationInfo.flags;
+                //ApplicationInfo.FLAG_SYSTEM 表示系统应用程序
+                if ((flags & ApplicationInfo.FLAG_SYSTEM) != 0) {    //系统应用
+                    taskInfo.setUserApp(false);
+                } else {
+                    taskInfo.setUserApp(true);
+                }
 
             } catch (Exception e) {
                 e.printStackTrace();

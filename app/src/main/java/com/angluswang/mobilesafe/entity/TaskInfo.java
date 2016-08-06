@@ -15,6 +15,15 @@ public class TaskInfo {
     private long memorySize;
 
     private boolean userApp; // 是否是用户 App
+    private boolean isChecked; // 复选框是否勾上
+
+    public boolean isChecked() {
+        return isChecked;
+    }
+
+    public void setChecked(boolean checked) {
+        isChecked = checked;
+    }
 
     public boolean isUserApp() {
         return userApp;
@@ -55,4 +64,11 @@ public class TaskInfo {
     public void setMemorySize(long memorySize) {
         this.memorySize = memorySize;
     }
+
+    @Override
+    public String toString() {
+        return "TaskInfo [packageName=" + packageName + ", appName=" + appName
+                + ", memorySize=" + memorySize + ", userApp=" + userApp + "]";
+    }
+
 }
