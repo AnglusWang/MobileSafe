@@ -71,17 +71,17 @@
         </activity>
         <activity
             android:name=".activity.DragViewActivity"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar">
-        </activity>
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
+
         <activity
             android:name=".activity.RocketBgActivity"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar">
-        </activity>
-        <activity android:name=".activity.CallSafeActivity">
-        </activity>
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
+
+        <activity android:name=".activity.CallSafeActivity"/>
         <!--应用程序管理-->
-        <activity android:name=".activity.AppManagerActivity">
-        </activity>
+        <activity android:name=".activity.AppManagerActivity"/>
+        <!-- 进程管理 -->
+        <activity android:name=".activity.TaskManagerActivity"/>
 
         <receiver android:name=".receiver.BootCompleteReceiver">
             <intent-filter>
@@ -93,7 +93,7 @@
                 <action android:name="android.provider.Telephony.SMS_RECEIVED"/>
             </intent-filter>
         </receiver>
-        <!-- 去电归属地显示 -->
+        <!-- 去电归属地显示 (静态注册广播接受者) -->
         <!-- <receiver android:name=".receiver.OutCallReceiver"> -->
         <!-- <intent-filter> -->
         <!-- <action android:name="android.intent.action.NEW_OUTGOING_CALL"/> -->

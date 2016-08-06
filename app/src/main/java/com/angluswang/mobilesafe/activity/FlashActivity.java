@@ -92,7 +92,7 @@ public class FlashActivity extends Activity {
 
         copyDB("address.db"); // 拷贝归属地查询数据库
 
-        CreateShortCut(); // 创建桌面快捷方式
+//        CreateShortCut(); // 创建桌面快捷方式
 
         Boolean autoUpdate = mPref.getBoolean("auto_update", true);
         if (autoUpdate) {
