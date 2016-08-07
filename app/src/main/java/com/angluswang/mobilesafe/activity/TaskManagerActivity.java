@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.text.format.Formatter;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.ImageView;
@@ -44,6 +45,8 @@ public class TaskManagerActivity extends Activity {
     private ArrayList<TaskInfo> userTaskInfos;
     private ArrayList<TaskInfo> systemAppInfos;
 
+    private TaskManagerAdapter adapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,7 +77,7 @@ public class TaskManagerActivity extends Activity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        TaskManagerAdapter adapter = new TaskManagerAdapter();
+                        adapter = new TaskManagerAdapter();
                         lvProcess.setAdapter(adapter);
                     }
                 });
@@ -166,7 +169,12 @@ public class TaskManagerActivity extends Activity {
             holder.tvAppName.setText(taskInfo.getAppName());
             holder.tvAppMemorySize.setText("内存占用:" + Formatter.formatFileSize(
                     TaskManagerActivity.this, taskInfo.getMemorySize()));
-
+            // 设置是否勾选状态
+            if (taskInfo.isChecked()) {
+                holder.tvAppStatus.setChecked(true);
+            } else {
+                holder.tvAppStatus.setChecked(false);
+            }
             return view;
         }
     }
@@ -175,7 +183,7 @@ public class TaskManagerActivity extends Activity {
         ImageView imgAppIcon;
         TextView tvAppName;
         TextView tvAppMemorySize;
-        TextView tvAppStatus;
+        CheckBox tvAppStatus;
     }
 
     private void initView() {
@@ -191,5 +199,72 @@ public class TaskManagerActivity extends Activity {
                 Formatter.formatFileSize(TaskManagerActivity.this, availMem) + "/" +
                 Formatter.formatFileSize(TaskManagerActivity.this, totalMem));
 
+        // 为 ListView 设置点击事件
+        lvProcess.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,
+                                    int position, long id) {
+                Object object = lvProcess.getItemAtPosition(position);
+                if (object != null && object instanceof TaskInfo) { // 判断是否是进程条目
+
+                    TaskInfo taskInfo = (TaskInfo) object;
+                    ViewHolder holder = (ViewHolder) view.getTag();// 拿到 item 条目对象
+                    if (taskInfo.isChecked()) { // 如果勾选了，设置为未勾选，反之。。。
+                        taskInfo.setChecked(false);
+                        holder.tvAppStatus.setChecked(false);
+                    } else {
+                        taskInfo.setChecked(true);
+                        holder.tvAppStatus.setChecked(true);
+                    }
+                }
+            }
+        });
     }
+
+    /**
+     * 全选
+     *
+     * @param view
+     */
+    public void selectAll(View view) {
+        for (TaskInfo info : userTaskInfos) {
+            info.setChecked(true);
+        }
+        for (TaskInfo info : systemAppInfos) {
+            info.setChecked(true);
+        }
+        adapter.notifyDataSetChanged(); // 数据发生改变是刷新界面
+    }
+
+    /**
+     * 反选
+     *
+     * @param view
+     */
+    public void selectOppsite(View view) {
+        for (TaskInfo info : userTaskInfos) {
+            info.setChecked(!info.isChecked());
+        }
+        for (TaskInfo info : systemAppInfos) {
+            info.setChecked(!info.isChecked());
+        }
+        adapter.notifyDataSetChanged();
+    }
+
+    /**
+     * 清理
+     *
+     * @param view
+     */
+    public void killProcess(View view) {
+    }
+
+    /**
+     * 设置
+     *
+     * @param view
+     */
+    public void openSetting(View view) {
+    }
+
 }

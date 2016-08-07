@@ -38,4 +38,43 @@
         android:layout_height="match_parent"
         android:layout_weight="1">
     </ListView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="全选"
+            android:onClick="selectAll"
+            android:background="@drawable/button_selector"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="反选"
+            android:onClick="selectOppsite"
+            android:background="@drawable/button_selector"
+            />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="清理"
+            android:onClick="killProcess"
+            android:background="@drawable/button_selector"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="设置"
+            android:onClick="openSetting"
+            android:background="@drawable/button_selector"/>
+    </LinearLayout>
 </LinearLayout>

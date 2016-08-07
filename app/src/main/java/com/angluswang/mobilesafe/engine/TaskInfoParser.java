@@ -28,7 +28,7 @@ public class TaskInfoParser {
 
         // 获取到进程管理器
         ActivityManager activityManager =
-                (ActivityManager) context.getSystemService(context.ACTIVITY_SERVICE);
+                (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
         // 获取到手机上面所有运行的进程
         List<ActivityManager.RunningAppProcessInfo> appProcesses =
                 activityManager.getRunningAppProcesses();
