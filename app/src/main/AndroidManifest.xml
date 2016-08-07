@@ -112,6 +112,8 @@
         </service>
         <service android:name=".service.CallSafeService">
         </service>
+        <!-- 自动清理进程服务 -->
+        <service android:name=".service.KillProcessService"/>
 
     </application>
 

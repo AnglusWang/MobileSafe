@@ -12,7 +12,7 @@ import com.angluswang.mobilesafe.service.AddressService;
 import com.angluswang.mobilesafe.service.CallSafeService;
 import com.angluswang.mobilesafe.R;
 import com.angluswang.mobilesafe.service.RocketService;
-import com.angluswang.mobilesafe.utils.ServiceStatusUtils;
+import com.angluswang.mobilesafe.utils.SystemInfoUtils;
 import com.angluswang.mobilesafe.view.SettingClickView;
 import com.angluswang.mobilesafe.view.SettingItemView;
 
@@ -87,8 +87,8 @@ public class SettingActivity extends Activity {
     private void initAddressView() {
         sivAddress = (SettingItemView) findViewById(R.id.siv_address);
 
-        boolean running = ServiceStatusUtils.isServiceRunning(this,
-                "AddressService");
+        boolean running = SystemInfoUtils.isServiceRunning(this,
+                "com.angluswang.mobilesafe.service.AddressService");
         if (running) {
             sivAddress.setChecked(true);
         } else {
@@ -118,8 +118,8 @@ public class SettingActivity extends Activity {
     private void initRocketView() {
         sivRocket = (SettingItemView) findViewById(R.id.siv_rocket);
 
-        boolean running = ServiceStatusUtils.isServiceRunning(this,
-                "RocketService");
+        boolean running = SystemInfoUtils.isServiceRunning(this,
+                "com.angluswang.mobilesafe.service.RocketService");
         if (running) {
             sivRocket.setChecked(true);
         } else {
@@ -149,8 +149,8 @@ public class SettingActivity extends Activity {
         sivBlackNum = (SettingItemView) findViewById(R.id.siv_black_num);
 
         // 判断拦截服务是否运行
-        boolean serviceRunning = ServiceStatusUtils.isServiceRunning(this,
-                "CallSafeService");
+        boolean serviceRunning = SystemInfoUtils.isServiceRunning(this,
+                "com.angluswang.mobilesafe.service.CallSafeService");
         if (serviceRunning) {
             sivBlackNum.setChecked(true);
         } else {
