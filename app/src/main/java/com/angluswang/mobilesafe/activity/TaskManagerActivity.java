@@ -2,6 +2,7 @@ package com.angluswang.mobilesafe.activity;
 
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.format.Formatter;
@@ -18,6 +19,7 @@ import android.widget.TextView;
 import com.angluswang.mobilesafe.R;
 import com.angluswang.mobilesafe.engine.TaskInfoParser;
 import com.angluswang.mobilesafe.entity.TaskInfo;
+import com.angluswang.mobilesafe.utils.SharedPreferencesUtils;
 import com.angluswang.mobilesafe.utils.SystemInfoUtils;
 import com.angluswang.mobilesafe.utils.UIUtils;
 import com.lidroid.xutils.ViewUtils;
@@ -65,6 +67,15 @@ public class TaskManagerActivity extends Activity {
         initData();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (adapter != null) {
+            adapter.notifyDataSetChanged();
+        }
+    }
+
     private void initData() {
 
         new Thread() {
@@ -97,7 +108,13 @@ public class TaskManagerActivity extends Activity {
     private class TaskManagerAdapter extends BaseAdapter {
         @Override
         public int getCount() {
-            return taskInfos.size();
+            boolean result = SharedPreferencesUtils.getBoolean(
+                    TaskManagerActivity.this, "is_show_system", false);
+            if (result) {
+                return userTaskInfos.size() + systemAppInfos.size() + 2;
+            } else {
+                return userTaskInfos.size() + 1;
+            }
         }
 
         @Override
@@ -360,7 +377,8 @@ public class TaskManagerActivity extends Activity {
      * @param view
      */
     public void openSetting(View view) {
-
+        startActivity(new Intent(TaskManagerActivity.this,
+                TaskManagerSettingActivity.class));
     }
 
 }

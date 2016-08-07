@@ -84,6 +84,8 @@
         <activity android:name=".activity.AppManagerActivity"/>
         <!-- 进程管理 -->
         <activity android:name=".activity.TaskManagerActivity"/>
+        <!-- 任务管理器设置 -->
+        <activity android:name=".activity.TaskManagerSettingActivity"/>
 
         <receiver android:name=".receiver.BootCompleteReceiver">
             <intent-filter>
