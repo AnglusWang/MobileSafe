@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.IBinder;
-import android.util.Log;
 
 import java.util.List;
 
@@ -39,7 +38,6 @@ public class KillProcessService extends Service {
             for (ActivityManager.RunningAppProcessInfo runningAppProcessInfo
                     : appProcesses) {
                 am.killBackgroundProcesses(runningAppProcessInfo.processName);
-                Log.e("killInfos ======= :", runningAppProcessInfo.processName);
             }
         }
     }
