@@ -1,6 +1,7 @@
 package com.angluswang.mobilesafe.activity;
 
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.format.Formatter;
@@ -18,12 +19,16 @@ import com.angluswang.mobilesafe.R;
 import com.angluswang.mobilesafe.engine.TaskInfoParser;
 import com.angluswang.mobilesafe.entity.TaskInfo;
 import com.angluswang.mobilesafe.utils.SystemInfoUtils;
+import com.angluswang.mobilesafe.utils.UIUtils;
 import com.lidroid.xutils.ViewUtils;
 import com.lidroid.xutils.view.annotation.ContentView;
 import com.lidroid.xutils.view.annotation.ViewInject;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.angluswang.mobilesafe.R.id.tv_task_memory;
+import static com.angluswang.mobilesafe.R.id.tv_task_process_count;
 
 /**
  * Created by AnglusWang on 2016/8/6.
@@ -33,9 +38,9 @@ import java.util.List;
 @ContentView(R.layout.activity_task_manager)
 public class TaskManagerActivity extends Activity {
 
-    @ViewInject(R.id.tv_task_process_count)
+    @ViewInject(tv_task_process_count)
     private TextView tvTpCount; // 运行中进程总数
-    @ViewInject(R.id.tv_task_memory)
+    @ViewInject(tv_task_memory)
     private TextView tvTaskMemory;
 
     @ViewInject(R.id.lv_process)
@@ -46,6 +51,10 @@ public class TaskManagerActivity extends Activity {
     private ArrayList<TaskInfo> systemAppInfos;
 
     private TaskManagerAdapter adapter;
+    private int processCount; // 共有多少个进程
+
+    private long availMem; // 系统剩余可用内存
+    private long totalMem; // 系统总内存
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -167,14 +176,26 @@ public class TaskManagerActivity extends Activity {
             // 设置图片本身的大小
             holder.imgAppIcon.setImageDrawable(taskInfo.getIcon());
             holder.tvAppName.setText(taskInfo.getAppName());
-            holder.tvAppMemorySize.setText("内存占用:" + Formatter.formatFileSize(
-                    TaskManagerActivity.this, taskInfo.getMemorySize()));
+            holder.tvAppMemorySize.setText("内存占用:" +
+                    Formatter.formatFileSize(
+                            TaskManagerActivity.this, taskInfo.getMemorySize()));
             // 设置是否勾选状态
             if (taskInfo.isChecked()) {
                 holder.tvAppStatus.setChecked(true);
             } else {
                 holder.tvAppStatus.setChecked(false);
             }
+
+            // 判断当前展示的 item 是否是自己的程序。
+            // 如果是,就把程序给隐藏
+            if (taskInfo.getPackageName().equals(getPackageName())) {
+                //隐藏
+                holder.tvAppStatus.setVisibility(View.INVISIBLE);
+            } else {
+                //显示
+                holder.tvAppStatus.setVisibility(View.VISIBLE);
+            }
+
             return view;
         }
     }
@@ -189,12 +210,12 @@ public class TaskManagerActivity extends Activity {
     private void initView() {
 
         // 获取手机上所有在运行的进程
-        int count = SystemInfoUtils.getProcessCount(this);
-        tvTpCount.setText("运行中的进程：" + count + "个");
+        processCount = SystemInfoUtils.getProcessCount(this);
+        tvTpCount.setText("运行中的进程：" + processCount + "个");
 
         // 获取内存的基本信息 及 剩余内存
-        long availMem = SystemInfoUtils.getAvailMem(this);  // 系统剩余可用内存
-        long totalMem = SystemInfoUtils.getTotalMem();  // 系统总内存
+        availMem = SystemInfoUtils.getAvailMem(this);  // 系统剩余可用内存
+        totalMem = SystemInfoUtils.getTotalMem();  // 系统总内存
         tvTaskMemory.setText("剩余/总内存 " +
                 Formatter.formatFileSize(TaskManagerActivity.this, availMem) + "/" +
                 Formatter.formatFileSize(TaskManagerActivity.this, totalMem));
@@ -209,6 +230,10 @@ public class TaskManagerActivity extends Activity {
 
                     TaskInfo taskInfo = (TaskInfo) object;
                     ViewHolder holder = (ViewHolder) view.getTag();// 拿到 item 条目对象
+                    // 如果是自己，不作处理
+                    if (taskInfo.getPackageName().equals(getPackageName())) {
+                        return;
+                    }
                     if (taskInfo.isChecked()) { // 如果勾选了，设置为未勾选，反之。。。
                         taskInfo.setChecked(false);
                         holder.tvAppStatus.setChecked(false);
@@ -228,6 +253,12 @@ public class TaskManagerActivity extends Activity {
      */
     public void selectAll(View view) {
         for (TaskInfo info : userTaskInfos) {
+
+            // 判断当前的用户程序是不是自己的程序。
+            // 如果是自己的程序。那么就把文本框隐藏
+            if (info.getPackageName().equals(getPackageName())) {
+                continue;
+            }
             info.setChecked(true);
         }
         for (TaskInfo info : systemAppInfos) {
@@ -243,6 +274,9 @@ public class TaskManagerActivity extends Activity {
      */
     public void selectOppsite(View view) {
         for (TaskInfo info : userTaskInfos) {
+            if (info.getPackageName().equals(getPackageName())) {
+                continue;
+            }
             info.setChecked(!info.isChecked());
         }
         for (TaskInfo info : systemAppInfos) {
@@ -252,19 +286,81 @@ public class TaskManagerActivity extends Activity {
     }
 
     /**
-     * 清理
+     * 清理进程
      *
      * @param view
      */
     public void killProcess(View view) {
+
+        // 想杀死进程。首先必须得到进程管理器
+        ActivityManager activityManager =
+                (ActivityManager) getSystemService(ACTIVITY_SERVICE);
+
+        // 清理进程的集合
+        List<TaskInfo> killLists = new ArrayList<>();
+        // 清理的总共的进程个数
+        int totalCount = 0;
+        // 清理的进程的大小
+        int killMem = 0;
+        for (TaskInfo taskInfo : userTaskInfos) {
+
+            if (taskInfo.isChecked()) {
+                killLists.add(taskInfo);
+                totalCount++;
+                killMem += taskInfo.getMemorySize();
+
+            }
+        }
+
+        for (TaskInfo taskInfo : systemAppInfos) {
+
+            if (taskInfo.isChecked()) {
+                killLists.add(taskInfo);
+                totalCount++;
+                killMem += taskInfo.getMemorySize();
+            }
+        }
+
+        // 注意： 当集合在迭代的时候。不能修改集合的大小
+        for (TaskInfo taskInfo : killLists) {
+            // 判断是否是用户app
+            if (taskInfo.isUserApp()) {
+                userTaskInfos.remove(taskInfo);
+                // 杀死进程 参数表示包名
+                activityManager.killBackgroundProcesses(taskInfo
+                        .getPackageName());
+            } else {
+                systemAppInfos.remove(taskInfo);
+                // 杀死进程 参数表示包名
+                activityManager.killBackgroundProcesses(taskInfo
+                        .getPackageName());
+            }
+        }
+
+        UIUtils.showToast(TaskManagerActivity.this,
+                "共清理" + totalCount + "个进程,释放"
+                        + Formatter.formatFileSize(TaskManagerActivity.this, killMem)
+                        + "内存");
+
+        //processCount 表示总共有多少个进程
+        //totalCount 当前清理了多少个进程
+        processCount -= totalCount;
+        tvTpCount.setText("运行中的进程：" + processCount + "个");
+        tvTaskMemory.setText("剩余/总内存 " +
+                Formatter.formatFileSize(TaskManagerActivity.this, availMem + killMem)
+                + "/" + Formatter.formatFileSize(TaskManagerActivity.this, totalMem));
+
+        // 刷新界面
+        adapter.notifyDataSetChanged();
     }
 
     /**
-     * 设置
+     * 进程设置
      *
      * @param view
      */
     public void openSetting(View view) {
+
     }
 
 }
