@@ -91,6 +91,7 @@ public class FlashActivity extends Activity {
         mPref = getSharedPreferences("config", MODE_PRIVATE);
 
         copyDB("address.db"); // 拷贝归属地查询数据库
+        copyDB("antivirus.db"); // 拷贝病毒数据库
 
 //        CreateShortCut(); // 创建桌面快捷方式
 
