@@ -1,4 +1,4 @@
-package com.angluswang.mobilesafe.activity;
+package com.angluswang.mobilesafe.activity.activity;
 
 import android.app.Activity;
 import android.content.pm.PackageInfo;

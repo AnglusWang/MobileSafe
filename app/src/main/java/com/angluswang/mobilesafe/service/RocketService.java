@@ -15,7 +15,7 @@ import android.view.View.OnTouchListener;
 import android.view.WindowManager;
 import android.widget.ImageView;
 
-import com.angluswang.mobilesafe.activity.RocketBgActivity;
+import com.angluswang.mobilesafe.activity.activity.RocketBgActivity;
 import com.angluswang.mobilesafe.R;
 
 public class RocketService extends Service {

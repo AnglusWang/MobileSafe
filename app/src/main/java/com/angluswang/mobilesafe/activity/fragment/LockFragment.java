@@ -1,4 +1,4 @@
-package com.angluswang.mobilesafe.fragment;
+package com.angluswang.mobilesafe.activity.fragment;
 
 import android.app.Fragment;
 import android.os.Bundle;

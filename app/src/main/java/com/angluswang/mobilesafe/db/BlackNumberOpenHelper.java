@@ -1,4 +1,4 @@
-package com.angluswang.mobilesafe.dao;
+package com.angluswang.mobilesafe.db;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;

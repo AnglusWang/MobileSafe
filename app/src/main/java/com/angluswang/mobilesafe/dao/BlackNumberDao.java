@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.SystemClock;
 
+import com.angluswang.mobilesafe.db.BlackNumberOpenHelper;
 import com.angluswang.mobilesafe.entity.BlackNumberInfo;
 
 import java.util.ArrayList;

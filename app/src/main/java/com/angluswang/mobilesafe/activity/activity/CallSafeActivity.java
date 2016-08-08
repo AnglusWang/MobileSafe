@@ -1,4 +1,4 @@
-package com.angluswang.mobilesafe.activity;
+package com.angluswang.mobilesafe.activity.activity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -26,7 +26,6 @@ import com.angluswang.mobilesafe.entity.BlackNumberInfo;
 
 import java.util.List;
 
-import static com.angluswang.mobilesafe.R.id.et_number;
 import static com.angluswang.mobilesafe.R.id.et_number;
 
 /**

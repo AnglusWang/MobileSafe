@@ -1,4 +1,4 @@
-package com.angluswang.mobilesafe.activity;
+package com.angluswang.mobilesafe.activity.activity;
 
 import android.app.Activity;
 import android.app.FragmentManager;
@@ -9,8 +9,8 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.angluswang.mobilesafe.R;
-import com.angluswang.mobilesafe.fragment.LockFragment;
-import com.angluswang.mobilesafe.fragment.UnLockFragment;
+import com.angluswang.mobilesafe.activity.fragment.LockFragment;
+import com.angluswang.mobilesafe.activity.fragment.UnLockFragment;
 import com.lidroid.xutils.ViewUtils;
 import com.lidroid.xutils.view.annotation.ContentView;
 import com.lidroid.xutils.view.annotation.ViewInject;
