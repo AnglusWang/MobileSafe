@@ -98,12 +98,18 @@
             </intent-filter>
         </receiver>
         <!-- 桌面小部件 -->
-        <receiver android:name=".receiver.MyAppWidget" >
+        <receiver android:name=".receiver.MyAppWidget">
             <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
             </intent-filter>
-            <meta-data android:name="android.appwidget.provider"
-                       android:resource="@xml/appwidget_info" />
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/appwidget_info"/>
+        </receiver>
+        <receiver android:name=".receiver.KillProcessAllReceiver">
+            <intent-filter>
+                <action android:name="com.angluswang.kill_process_all"/>
+            </intent-filter>
         </receiver>
 
         <service android:name=".service.LocationService">
