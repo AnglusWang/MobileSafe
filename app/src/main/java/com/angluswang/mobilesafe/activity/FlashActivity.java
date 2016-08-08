@@ -21,6 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.angluswang.mobilesafe.R;
+import com.angluswang.mobilesafe.dao.AntivirusDao;
 import com.angluswang.mobilesafe.entity.VersionInfo;
 import com.angluswang.mobilesafe.utils.StreamUtils;
 import com.google.gson.Gson;
@@ -51,6 +52,8 @@ public class FlashActivity extends Activity {
     private SharedPreferences mPref;
 
     private RelativeLayout rfRoot;
+
+    private AntivirusDao dao;
 
     private Handler mHandler = new Handler() {
         @Override
@@ -95,6 +98,8 @@ public class FlashActivity extends Activity {
 
 //        CreateShortCut(); // 创建桌面快捷方式
 
+        updataVirus();  //更新病毒数据库
+
         Boolean autoUpdate = mPref.getBoolean("auto_update", true);
         if (autoUpdate) {
             checkVersion();
@@ -106,6 +111,13 @@ public class FlashActivity extends Activity {
         AlphaAnimation anim = new AlphaAnimation(0.3f, 1.0f);
         anim.setDuration(2000);
         rfRoot.startAnimation(anim);
+    }
+
+    /**
+     * 联网, 从服务器更新病毒数据库
+     */
+    private void updataVirus() {
+
     }
 
     /**

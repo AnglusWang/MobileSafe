@@ -72,13 +72,13 @@ public class AntivirusActivity extends Activity {
                 case SCANING: // 病毒扫描中
                     TextView child = new TextView(AntivirusActivity.this);
                     ScanInfo scanInfo = (ScanInfo) msg.obj;
-                    // 如果为true表示有病毒
-                    if (scanInfo.desc) {
+
+                    if (scanInfo.desc) { // 如果为true表示有病毒
                         child.setTextColor(Color.RED);
                         child.setText(scanInfo.appName + "有病毒");
-                    } else {
+                    } else { // 为false表示没有病毒
                         child.setTextColor(Color.BLACK);
-					// 为false表示没有病毒
+
                         child.setText(scanInfo.appName + "扫描安全");
                     }
                     llContent.addView(child, 0); // 添加TextView 到LinearLayout 列表
