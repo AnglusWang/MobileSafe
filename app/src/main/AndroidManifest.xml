@@ -97,12 +97,14 @@
                 <action android:name="android.provider.Telephony.SMS_RECEIVED"/>
             </intent-filter>
         </receiver>
-        <!-- 去电归属地显示 (静态注册广播接受者) -->
-        <!-- <receiver android:name=".receiver.OutCallReceiver"> -->
-        <!-- <intent-filter> -->
-        <!-- <action android:name="android.intent.action.NEW_OUTGOING_CALL"/> -->
-        <!-- </intent-filter> -->
-        <!-- </receiver> -->
+        <!-- 桌面小部件 -->
+        <receiver android:name=".receiver.MyAppWidget" >
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data android:name="android.appwidget.provider"
+                       android:resource="@xml/appwidget_info" />
+        </receiver>
 
         <service android:name=".service.LocationService">
         </service>
