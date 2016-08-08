@@ -22,9 +22,15 @@
         android:text="短信备份"/>
 
     <!--<ProgressBar-->
-        <!--android:id="@+id/pb_msg_backup"-->
-        <!--style="?android:attr/progressBarStyleHorizontal"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"/>-->
+    <!--android:id="@+id/pb_msg_backup"-->
+    <!--style="?android:attr/progressBarStyleHorizontal"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"/>-->
+
+    <TextView
+        style="@style/AToolsItemStyle"
+        android:drawableLeft="@android:drawable/ic_lock_lock"
+        android:onClick="appLock"
+        android:text="应用程序锁"/>
 
 </LinearLayout>

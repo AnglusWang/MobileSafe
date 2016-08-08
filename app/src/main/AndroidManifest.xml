@@ -88,6 +88,8 @@
         <activity android:name=".activity.TaskManagerSettingActivity"/>
         <!-- 病毒查杀 -->
         <activity android:name=".activity.AntivirusActivity"/>
+        <!-- 应用程序锁 -->
+        <activity android:name=".activity.AppLockActivity"/>
 
         <receiver android:name=".receiver.BootCompleteReceiver">
             <intent-filter>

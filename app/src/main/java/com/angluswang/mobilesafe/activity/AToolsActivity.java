@@ -79,4 +79,13 @@ public class AToolsActivity extends Activity {
             }
         };
     }
+
+    /**
+     * 应用程序锁 点击事件
+     *
+     * @param view
+     */
+    public void appLock(View view) {
+        startActivity(new Intent(AToolsActivity.this, AppLockActivity.class));
+    }
 }
