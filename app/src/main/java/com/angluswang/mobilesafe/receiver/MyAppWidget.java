@@ -4,7 +4,7 @@ import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
 
-import com.angluswang.mobilesafe.service.KillProcesWidgetService;
+import com.angluswang.mobilesafe.service.KillProcessWidgetService;
 
 /**
  * Created by AnglusWang on 2016/8/8.
@@ -23,7 +23,7 @@ public class MyAppWidget extends AppWidgetProvider {
     public void onEnabled(Context context) {
         super.onEnabled(context);
 
-        Intent intent = new Intent(context,KillProcesWidgetService.class);
+        Intent intent = new Intent(context,KillProcessWidgetService.class);
         context.startService(intent);
         System.out.println("onEnabled");
     }
@@ -35,7 +35,7 @@ public class MyAppWidget extends AppWidgetProvider {
     public void onDisabled(Context context) {
         super.onDisabled(context);
 
-        Intent intent = new Intent(context,KillProcesWidgetService.class);
+        Intent intent = new Intent(context,KillProcessWidgetService.class);
         context.stopService(intent);
         System.out.println("onDisabled");
     }
