@@ -24,14 +24,14 @@ public class HomeActivity extends Activity {
 
     private GridView gvHome;
 
-    private String[] mItems = new String[] {"手机防盗", "通讯卫士", "软件管理", "进程管理",
-            "流量统计", "手机杀毒", "缓存清理", "高级工具", "设置中心" };
+    private String[] mItems = new String[]{"手机防盗", "通讯卫士", "软件管理", "进程管理",
+            "流量统计", "手机杀毒", "缓存清理", "高级工具", "设置中心"};
 
-    private int[] mPics = new int[] {R.drawable.home_safe,
+    private int[] mPics = new int[]{R.drawable.home_safe,
             R.drawable.home_callmsgsafe, R.drawable.home_apps,
             R.drawable.home_taskmanager, R.drawable.home_netmanager,
             R.drawable.home_trojan, R.drawable.home_sysoptimize,
-            R.drawable.home_tools, R.drawable.home_settings };
+            R.drawable.home_tools, R.drawable.home_settings};
 
     private SharedPreferences mPref;
 
@@ -69,6 +69,10 @@ public class HomeActivity extends Activity {
                         // 病毒查杀
                         startActivity(new Intent(HomeActivity.this, AntivirusActivity.class));
                         break;
+                    case 6:
+                        // 缓存清理
+                        startActivity(new Intent(HomeActivity.this, CleanCacheActivity.class));
+                        break;
                     case 7:
                         //高级工具
                         startActivity(new Intent(HomeActivity.this, AToolsActivity.class));
@@ -93,7 +97,7 @@ public class HomeActivity extends Activity {
         if (!TextUtils.isEmpty(savePassword)) {
             //输入密码
             showPasswordInputDailog();
-        }else {
+        } else {
             //如果没设置就弹出设置密码弹窗
             showPasswordSetDailog();
         }
@@ -104,7 +108,7 @@ public class HomeActivity extends Activity {
      */
     private void showPasswordInputDailog() {
 
-        AlertDialog.Builder builder = new  AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
         final AlertDialog dialog = builder.create();
 
         View view = View.inflate(this, R.layout.dailog_input_password, null);
@@ -160,7 +164,7 @@ public class HomeActivity extends Activity {
      */
     private void showPasswordSetDailog() {
 
-        AlertDialog.Builder builder = new  AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
         final AlertDialog dialog = builder.create();
 
         View view = View.inflate(this, R.layout.dailog_set_password, null);
@@ -189,8 +193,8 @@ public class HomeActivity extends Activity {
 //                                 Toast.LENGTH_SHORT).show();
 
                         // 将密码保存起来
-                         mPref.edit().putString("password",
-                                 MD5Utils.encode(password)).commit();
+                        mPref.edit().putString("password",
+                                MD5Utils.encode(password)).commit();
 
                         dialog.dismiss();
 
@@ -243,7 +247,8 @@ public class HomeActivity extends Activity {
             ImageView ivItem = (ImageView) view.findViewById(R.id.iv_item);
             TextView tvItem = (TextView) view.findViewById(R.id.tv_item);
 
-            ivItem.setImageResource(mPics[position]);  tvItem.setText(mItems[position]);
+            ivItem.setImageResource(mPics[position]);
+            tvItem.setText(mItems[position]);
 
             return view;
         }
