@@ -30,7 +30,6 @@ import static com.angluswang.mobilesafe.R.id.tv_unlock;
 
 public class UnLockFragment extends Fragment {
 
-    private View view;
     private ListView lvApps;
     private TextView tvUnlock;
 
@@ -42,7 +41,7 @@ public class UnLockFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.item_unlock_fragment, null);
+        View view = inflater.inflate(R.layout.item_unlock_fragment, null);
         lvApps = (ListView) view.findViewById(R.id.lv_apps);
         tvUnlock = (TextView) view.findViewById(tv_unlock);
 

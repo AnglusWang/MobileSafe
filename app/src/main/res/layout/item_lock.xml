@@ -20,9 +20,9 @@
         android:text="程序锁"/>
 
     <ImageView
-        android:id="@+id/img_unlock"
+        android:id="@+id/img_lock"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/list_button_lock"/>
+        android:src="@drawable/list_button_unlock"/>
 
 </LinearLayout>
