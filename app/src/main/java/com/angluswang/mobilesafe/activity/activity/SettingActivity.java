@@ -8,10 +8,11 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 
+import com.angluswang.mobilesafe.R;
 import com.angluswang.mobilesafe.service.AddressService;
 import com.angluswang.mobilesafe.service.CallSafeService;
-import com.angluswang.mobilesafe.R;
 import com.angluswang.mobilesafe.service.RocketService;
+import com.angluswang.mobilesafe.service.WatchDogService;
 import com.angluswang.mobilesafe.utils.SystemInfoUtils;
 import com.angluswang.mobilesafe.view.SettingClickView;
 import com.angluswang.mobilesafe.view.SettingItemView;
@@ -27,11 +28,14 @@ public class SettingActivity extends Activity {
     private SettingItemView sivAddress;  //归属地显示设置
     private SettingItemView sivRocket; // 小火箭设置
     private SettingItemView sivBlackNum; // 黑名单设置
+    private SettingItemView svWatchDog; // 看门狗设置
 
     private SettingClickView scvAddressStyle; // 归属地风格
     private SettingClickView scvAddressLocation; // 归属地位置
 
     private SharedPreferences mPref;
+
+    private Intent watchDogIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +50,7 @@ public class SettingActivity extends Activity {
         initAddressStyle();
         initAddressLocation();
         initBlackView();
+        initWatchDog();
     }
 
     /**
@@ -229,6 +234,37 @@ public class SettingActivity extends Activity {
             public void onClick(View v) {
                 // 跳转到归属地提示框设置界面
                 startActivity(new Intent(SettingActivity.this, DragViewActivity.class));
+            }
+        });
+    }
+
+    /**
+     * 看门狗设置
+     */
+    private void initWatchDog() {
+        svWatchDog = (SettingItemView) findViewById(R.id.siv_watch_dog);
+
+        boolean running = SystemInfoUtils.isServiceRunning(this,
+                "com.angluswang.mobilesafe.service.WatchDogService");
+        if (running) {
+            svWatchDog.setChecked(true);
+        } else {
+            svWatchDog.setChecked(false);
+        }
+
+        watchDogIntent = new Intent(this, WatchDogService.class);
+        svWatchDog.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (svWatchDog.isChecked()) {
+                    svWatchDog.setChecked(false);
+                    // 停止拦截服务
+                    stopService(watchDogIntent);
+                } else {
+                    svWatchDog.setChecked(true);
+                    // 开启拦截服务
+                    startService(watchDogIntent);
+                }
             }
         });
     }

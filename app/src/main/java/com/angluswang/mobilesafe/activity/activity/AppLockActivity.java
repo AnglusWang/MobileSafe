@@ -5,7 +5,6 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.angluswang.mobilesafe.R;
@@ -26,8 +25,6 @@ public class AppLockActivity extends Activity implements View.OnClickListener {
     private TextView tvLock;
     @ViewInject(R.id.tv_unlock)
     private TextView tvUnlock;
-    @ViewInject(R.id.fl_content)
-    private FrameLayout flContent;
 
     private FragmentManager fragmentMg;
     private UnLockFragment unLockFragment;

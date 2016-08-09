@@ -127,6 +127,8 @@
         <!-- 自动清理进程服务 -->
         <service android:name=".service.KillProcessService"/>
         <service android:name=".service.KillProcessWidgetService"/>
+        <!-- 看门狗 -->
+        <service android:name=".service.WatchDogService"/>
 
     </application>
 

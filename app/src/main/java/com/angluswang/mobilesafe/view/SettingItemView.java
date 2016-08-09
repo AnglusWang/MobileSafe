@@ -1,6 +1,7 @@
 package com.angluswang.mobilesafe.view;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.CheckBox;
@@ -81,13 +82,15 @@ public class SettingItemView extends RelativeLayout {
         return cbStatus.isChecked();
     }
 
-    public void setChecked(boolean check) {
-        cbStatus.setChecked(check);
+    public void setChecked(boolean checked) {
+        cbStatus.setChecked(checked);
 
         //根据选择的状态更新文本描述
-        if (check) {
+        if (checked) {
+            tvDesc.setTextColor(Color.GREEN);
             setDesc(mDescOn);
         } else {
+            tvDesc.setTextColor(Color.RED);
             setDesc(mDescOff);
         }
     }
