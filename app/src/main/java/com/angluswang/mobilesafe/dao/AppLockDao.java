@@ -7,6 +7,9 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.angluswang.mobilesafe.db.AppLockOpenHelper;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by AnglusWang on 2016/8/8.
  * 程序锁
@@ -54,5 +57,23 @@ public class AppLockDao {
         cursor.close();
         db.close();
         return result;
+    }
+
+    /**
+     * 查询全部的锁定的包名
+     *
+     * @return
+     */
+    public List<String> findAll() {
+        SQLiteDatabase db = mHelper.getReadableDatabase();
+        Cursor cursor = db.query("info", new String[]{"package_name"},
+                null, null, null, null, null);
+        List<String> packNames = new ArrayList<>();
+        while (cursor.moveToNext()) {
+            packNames.add(cursor.getString(0));
+        }
+        cursor.close();
+        db.close();
+        return packNames;
     }
 }

@@ -92,6 +92,8 @@
         <activity android:name=".activity.activity.AntivirusActivity"/>
         <!-- 应用程序锁 -->
         <activity android:name=".activity.activity.AppLockActivity"/>
+        <!-- 输入密码 -->
+        <activity android:name=".activity.activity.EnterPwdActivity"/>
 
         <receiver android:name=".receiver.BootCompleteReceiver">
             <intent-filter>
