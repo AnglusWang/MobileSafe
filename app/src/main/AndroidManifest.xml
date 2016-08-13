@@ -93,7 +93,9 @@
         <!-- 应用程序锁 -->
         <activity android:name=".activity.activity.AppLockActivity"/>
         <!-- 输入密码 -->
-        <activity android:name=".activity.activity.EnterPwdActivity"/>
+        <activity
+            android:name=".activity.activity.EnterPwdActivity"
+            android:launchMode="singleInstance"/>
         <!-- 缓存清理 -->
         <activity android:name=".activity.activity.CleanCacheActivity"/>
 

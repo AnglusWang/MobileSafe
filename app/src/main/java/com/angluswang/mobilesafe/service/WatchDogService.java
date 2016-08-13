@@ -6,6 +6,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.ContentObserver;
+import android.net.Uri;
+import android.os.Handler;
 import android.os.IBinder;
 import android.os.SystemClock;
 
@@ -57,9 +60,32 @@ public class WatchDogService extends Service {
         }
     }
 
+    private class AppLockContentObserver extends ContentObserver {
+
+        /**
+         * Creates a content observer.
+         *
+         * @param handler The handler to run {@link #onChange} on, or null if none.
+         */
+        public AppLockContentObserver(Handler handler) {
+            super(handler);
+        }
+
+        @Override
+        public void onChange(boolean selfChange) {
+            super.onChange(selfChange);
+            appLockInfos = dao.findAll();
+        }
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
+
+        // 注册一个内容观察者
+        getContentResolver().registerContentObserver(
+                Uri.parse("content://com.angluswang.mobilesafe.change"), true,
+                new AppLockContentObserver(new Handler()));
 
         // 获得进程管理器
         am = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
